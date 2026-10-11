@@ -583,7 +583,7 @@ class WPArabic_Home_Widget_Categories extends WPArabic_Home_Widget {
 
     public function __construct() {
         parent::__construct('at-home-woocommerce-categories', wparabic_widget_name(__('قسم التصنيفات', 'wparabic-ecomm-cod')), array(
-            'description' => __('تصنيفات المتجر بعدة نماذج عرض : فسيفساء، شبكة، دوائر أو شريط متحرك.', 'wparabic-ecomm-cod'),
+            'description' => __('تصنيفات المتجر بعدة نماذج عرض : فسيفساء، بلاطات متساوية، شبكة، دوائر أو شريط متحرك.', 'wparabic-ecomm-cod'),
         ));
     }
 
@@ -595,6 +595,7 @@ class WPArabic_Home_Widget_Categories extends WPArabic_Home_Widget {
     public static function layouts() {
         return array(
             'mosaic'   => __('فسيفساء (كبيرة + متوسطتان + عريضة)', 'wparabic-ecomm-cod'),
+            'equal'    => __('بلاطات متساوية', 'wparabic-ecomm-cod'),
             'grid'     => __('شبكة بطاقات', 'wparabic-ecomm-cod'),
             'circles'  => __('دوائر', 'wparabic-ecomm-cod'),
             'carousel' => __('شريط متحرك', 'wparabic-ecomm-cod'),
@@ -788,9 +789,10 @@ class WPArabic_Home_Widget_Categories extends WPArabic_Home_Widget {
      */
     protected function render_list($terms, $i) {
         $layout  = $i['layout'];
-        $columns = in_array((int) $i['columns'], array(3, 4, 6), true) ? (int) $i['columns'] : 4;
-        $classes = 'wparabic-cats wparabic-cats--' . $layout . ($layout === 'grid' ? ' wparabic-cats--cols-' . $columns : '');
-        $size    = $layout === 'circles' ? 'woocommerce_thumbnail' : 'medium_large';
+        $columns = in_array((int) $i['columns'], array(2, 3, 4, 5, 6), true) ? (int) $i['columns'] : 4;
+        $classes = 'wparabic-cats wparabic-cats--' . $layout
+            . (in_array($layout, array('grid', 'equal'), true) ? ' wparabic-cats--cols-' . $columns : '');
+        $size = $layout === 'circles' ? 'woocommerce_thumbnail' : ($layout === 'equal' ? 'large' : 'medium_large');
         ?>
         <div class="<?php echo esc_attr($classes); ?>"<?php echo $layout === 'carousel' ? ' data-wparabic-carousel' : ''; ?>>
             <?php if ($layout === 'carousel') : ?>
@@ -803,9 +805,18 @@ class WPArabic_Home_Widget_Categories extends WPArabic_Home_Widget {
                             <span class="wparabic-cat-media">
                                 <img src="<?php echo esc_url($this->category_image($term, $size)); ?>" alt="" loading="lazy" decoding="async">
                             </span>
-                            <span class="wparabic-cat-name"><?php echo esc_html($term->name); ?></span>
-                            <?php if (!empty($i['show_count']) && $layout !== 'circles') : ?>
-                                <span class="wparabic-cat-count"><?php echo esc_html($this->count_label($term)); ?></span>
+                            <?php if ($layout === 'equal') : ?>
+                                <span class="wparabic-cat-caption">
+                                    <span class="wparabic-cat-name"><?php echo esc_html($term->name); ?></span>
+                                    <?php if (!empty($i['show_count'])) : ?>
+                                        <span class="wparabic-cat-count"><?php echo esc_html($this->count_label($term)); ?></span>
+                                    <?php endif; ?>
+                                </span>
+                            <?php else : ?>
+                                <span class="wparabic-cat-name"><?php echo esc_html($term->name); ?></span>
+                                <?php if (!empty($i['show_count']) && $layout !== 'circles') : ?>
+                                    <span class="wparabic-cat-count"><?php echo esc_html($this->count_label($term)); ?></span>
+                                <?php endif; ?>
                             <?php endif; ?>
                         </a>
                     </li>
@@ -879,14 +890,14 @@ class WPArabic_Home_Widget_Categories extends WPArabic_Home_Widget {
         }
         echo '</div>';
 
-        // --- Grille, cercles, carrousel.
-        echo '<div class="wparabic-layout-fields" data-layouts="grid,circles,carousel">';
+        // --- Blocs egaux, grille, cercles, carrousel.
+        echo '<div class="wparabic-layout-fields" data-layouts="grid,equal,circles,carousel">';
         $this->field_category_checklist($i);
         $this->field_text($i, 'limit', __('العدد الأقصى للتصنيفات', 'wparabic-ecomm-cod'), 'number');
-        echo '<div class="wparabic-layout-fields" data-layouts="grid">';
-        $this->field_select($i, 'columns', __('عدد الأعمدة', 'wparabic-ecomm-cod'), array(3 => '3', 4 => '4', 6 => '6'));
+        echo '<div class="wparabic-layout-fields" data-layouts="grid,equal">';
+        $this->field_select($i, 'columns', __('عدد الأعمدة في الصف', 'wparabic-ecomm-cod'), array(2 => '2', 3 => '3', 4 => '4', 5 => '5', 6 => '6'));
         echo '</div>';
-        echo '<div class="wparabic-layout-fields" data-layouts="grid,carousel">';
+        echo '<div class="wparabic-layout-fields" data-layouts="grid,equal,carousel">';
         $this->field_checkbox($i, 'show_count', __('إظهار عدد المنتجات', 'wparabic-ecomm-cod'));
         echo '</div>';
         echo '</div>';
@@ -932,7 +943,7 @@ class WPArabic_Home_Widget_Categories extends WPArabic_Home_Widget {
             'cat4'       => absint($new['cat4'] ?? 0),
             'cats'       => array_values(array_filter(array_map('absint', (array) ($new['cats'] ?? array())))),
             'limit'      => max(1, min(self::MAX_ITEMS, absint($new['limit'] ?? 8))),
-            'columns'    => in_array((int) ($new['columns'] ?? 4), array(3, 4, 6), true) ? (int) $new['columns'] : 4,
+            'columns'    => in_array((int) ($new['columns'] ?? 4), array(2, 3, 4, 5, 6), true) ? (int) $new['columns'] : 4,
             'show_count' => !empty($new['show_count']) ? 1 : 0,
         );
     }

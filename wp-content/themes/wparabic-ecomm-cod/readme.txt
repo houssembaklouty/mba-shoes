@@ -53,6 +53,15 @@ Ressources tierces embarquees :
 
 == Changelog ==
 
+= 3.6.0 =
+* Section categories, nouveau modele « بلاطات متساوية » : tuiles plein cadre
+  de meme taille, nom du categorie (et nombre de produits au choix) en calque
+  sur l'image, degrade vers le bas comme les tuiles de la mosaique.
+* Nombre de colonnes par ligne choisi par l'admin (2 a 6) pour les modeles
+  « بلاطات متساوية » et « شبكة بطاقات » — la grille passait de 3/4/6 a 2-6.
+* Mobile-first conserve : 2 colonnes sur telephone, 3 sur tablette, le reglage
+  admin s'applique au-dela de 992 px.
+
 = 3.5.0 =
 * Langue de la boutique independante de WordPress : arabe, francais ou
   anglais. Personnaliser > (panneau du theme) > اللغة : langue par defaut,

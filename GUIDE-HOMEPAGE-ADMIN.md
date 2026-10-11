@@ -33,7 +33,11 @@ Dans l'admin, les sections du thème sont préfixées **« خيارات القا
 | Widget | Rendu sur le site | Réglages principaux |
 |---|---|---|
 | **لافتة ترويجية** — bannière | Grande bannière promo en haut | image de fond, titre, sous-titre, texte + lien du bouton, hauteur (normale/haute) |
-| **قسم التصنيفات** — catégories | Tuiles de catégories de produits | 4 maquettes : mosaïque, grille de cartes, cercles, carrousel ; nombre de catégories, colonnes, choix des catégories |
+| **قسم التصنيفات** — catégories | Tuiles de catégories de produits | 5 maquettes : mosaïque, **blocs égaux (بلاطات متساوية)**, grille de cartes, cercles, carrousel ; nombre de colonnes par rangée (2–6) pour les blocs égaux et la grille ; nombre de catégories ; choix des catégories |
+
+Exemple de la maquette blocs égaux (nom et compteur en surimpression sur l'image) :
+
+![Maquette blocs égaux de la section catégories](docs/homepage-categories-equal.png)
 | **قسم المنتجات** — produits | Grille de produits | nombre (1–24), colonnes (4/5), tri (date/popularité/aléatoire), filtre par catégorie |
 | **قسم المميزات** — atouts | 4 blocs « icône + titre + texte » | 4 icônes FontAwesome + textes |
 

@@ -1209,7 +1209,7 @@ html:not([dir="rtl"]) #codplugin-checkout .form-qte {
   padding-bottom: 12px;
 }
 
-/* --- Grille : 2 colonnes mobile, 3 tablette, reglage (3/4/6) au-dela.
+/* --- Grille : 2 colonnes mobile, 3 tablette, reglage (2-6) au-dela.
    En flex centre : une derniere ligne incomplete reste centree. */
 .wparabic-cats--grid .wparabic-cats-track {
   --gap: 12px;
@@ -1232,12 +1232,71 @@ html:not([dir="rtl"]) #codplugin-checkout .form-qte {
 }
 
 @media (min-width: 992px) {
+  .wparabic-cats--cols-2 .wparabic-cats-track {
+    --cols: 2;
+  }
   .wparabic-cats--cols-4 .wparabic-cats-track {
     --cols: 4;
+  }
+  .wparabic-cats--cols-5 .wparabic-cats-track {
+    --cols: 5;
   }
   .wparabic-cats--cols-6 .wparabic-cats-track {
     --cols: 6;
   }
+}
+
+/* --- Blocs egaux : tuiles plein cadre de meme taille, nom en calque bas.
+   Meme piste flex que la grille (--cols), le reste est specifique. -------- */
+.wparabic-cats--equal .wparabic-cats-track {
+  --gap: 12px;
+  --cols: 2;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--gap);
+}
+
+.wparabic-cats--equal .wparabic-cat {
+  flex: 0 0 calc((100% - (var(--cols) - 1) * var(--gap)) / var(--cols));
+}
+
+@media (min-width: 768px) {
+  .wparabic-cats--equal .wparabic-cats-track {
+    --gap: 20px;
+    --cols: 3;
+  }
+}
+
+.wparabic-cats--equal .wparabic-cat-link {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #222;
+}
+
+.wparabic-cats--equal .wparabic-cat-media {
+  aspect-ratio: 4 / 3;
+}
+
+.wparabic-cats--equal .wparabic-cat-caption {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  padding: 34px 14px 12px;
+  color: #fff;
+  text-align: start;
+  text-shadow: 0 1px 4px rgb(0 0 0 / 45%);
+  background: linear-gradient(to top, rgb(0 0 0 / 55%), transparent);
+}
+
+.wparabic-cats--equal .wparabic-cat-name {
+  color: #fff;
+}
+
+.wparabic-cats--equal .wparabic-cat-count {
+  color: rgb(255 255 255 / 85%);
 }
 
 /* --- Cercles : une rangee qui defile au doigt sur mobile, lignes centrees
