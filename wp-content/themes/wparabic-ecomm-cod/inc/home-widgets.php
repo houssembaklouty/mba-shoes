@@ -251,6 +251,7 @@ abstract class WPArabic_Home_Widget extends WP_Widget {
             '1/1'  => '1:1',
             '4/3'  => '4:3',
             '9/16' => '9:16',
+            '7/10' => '7:10',
             '16/6' => '16:6',
         );
     }

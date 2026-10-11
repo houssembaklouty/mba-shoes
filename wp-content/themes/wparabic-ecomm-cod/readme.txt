@@ -53,6 +53,10 @@ Ressources tierces embarquees :
 
 == Changelog ==
 
+= 3.9.1 =
+* Nouveau ratio « 7:10 » (portrait, format affiche) dans l'option
+  « نسبة الصور » — la liste devient 1:1, 4:3, 9:16, 7:10, 16:6.
+
 = 3.9.0 =
 * Option « نسبة الصور » (ratio des images) sur les sections d'accueil :
   1:1 (défaut), 4:3, 9:16 ou 16:6, au choix de l'admin, indépendamment
