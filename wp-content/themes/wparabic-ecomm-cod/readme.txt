@@ -53,6 +53,20 @@ Ressources tierces embarquees :
 
 == Changelog ==
 
+= 3.10.0 =
+* Option « عرض كامل » (pleine largeur) par section : la grille sort du
+  conteneur et s'étend d'un bord à l'autre de l'écran, les blocs se
+  répartissant selon le nombre de colonnes choisi. Disponible sur les
+  widgets « أقسام حسب التصنيف », « قسم المنتجات » et « قسم التصنيفات »
+  (maquettes blocs égaux, grille, carrousel). Le titre de section reste
+  centré au-dessus.
+* Correction incluse : la grille 6 colonnes n'existait pas dans
+  style.css (règles 2 à 5 seulement) — le choix 6 colonnes du widget
+  « أقسام حسب التصنيف » est maintenant réellement appliqué, avec le
+  centrage des rangées incomplètes comme pour 3/4/5.
+* body overflow-x:clip absorbe les pixels de barre de défilement du
+  plein écran (clip, et non hidden : sticky continue de fonctionner).
+
 = 3.9.1 =
 * Nouveau ratio « 7:10 » (portrait, format affiche) dans l'option
   « نسبة الصور » — la liste devient 1:1, 4:3, 9:16, 7:10, 16:6.

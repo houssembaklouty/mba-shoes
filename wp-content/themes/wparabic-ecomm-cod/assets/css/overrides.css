@@ -1302,6 +1302,52 @@ html:not([dir="rtl"]) #codplugin-checkout .form-qte {
   color: rgb(255 255 255 / 85%);
 }
 
+/* --- Grille 6 colonnes : manquait dans style.css (regles 2 a 5 seulement).
+   Le widget « أقسام حسب التصنيف » propose 2 a 6 colonnes. ------------------ */
+.row-items.columns-6 {
+  grid-template-columns: repeat(6, 1fr);
+}
+
+@media (min-width: 993px) {
+  .row-items.columns-6:not(:has(> :nth-child(6))) {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 25px;
+  }
+  .row-items.columns-6:not(:has(> :nth-child(6))) > [class*="col-"] {
+    flex: 0 0 calc((100% - 5 * 25px) / 6);
+    max-width: calc((100% - 5 * 25px) / 6);
+  }
+}
+
+/* --- Option « عرض كامل » : la grille sort du conteneur, bord a bord -------
+   Plutot que le classique calc(50% - 50vw) — qui se cale sur le bloc
+   parent et decalle de quelques px en RTL — on deverrouille le conteneur
+   de la section elle-meme quand elle contient le marqueur .wparabic-row-full
+   (padding/marges bootstrap neutralises, max-width retire). :has() est
+   deja requis par les grilles incompletes plus haut. Le titre de section,
+   centre, s'etale lui aussi sur toute la largeur. */
+.widget-section:has(.wparabic-row-full) > [class*="container"] {
+  max-width: none;
+  padding-inline: 0;
+}
+
+.widget-section:has(.wparabic-row-full) > [class*="container"] > .row {
+  margin-inline: 0;
+}
+
+.widget-section:has(.wparabic-row-full) > [class*="container"] > .row > .col-12 {
+  max-width: none;
+  padding-inline: 0;
+}
+
+/* Tuiles de categories : un peu d'air par rapport aux bords de l'ecran
+   (les grilles produits ont deja leur padding interne de 15px). */
+.wparabic-cats.wparabic-row-full {
+  padding-inline: 15px;
+}
+
 /* --- Widget « أقسام حسب التصنيف » : groupes de cartes produits, un par
    catégorie choisie ; l'espacement entre groupes vient de là. ---------- */
 .wparabic-pbc-group {
