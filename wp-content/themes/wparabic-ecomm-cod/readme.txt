@@ -53,6 +53,15 @@ Ressources tierces embarquees :
 
 == Changelog ==
 
+= 3.11.0 =
+* Option « تمرير أفقي » (defilement horizontal) sur les widgets
+  « أقسام حسب التصنيف » et « قسم المنتجات » : une seule rangee qui
+  glisse au lieu de la grille empilee. Les cartes gardent la largeur
+  qu'elles auraient a N colonnes (N = reglage عدد الأعمدة = nombre de
+  cartes visibles d'un coup), les suivantes se revelent au glissement,
+  avec arrêt magnétique (scroll-snap). Compatible pleine largeur et
+  ratio. Sur mobile, 1,8 carte visible pour signaler le glissement.
+
 = 3.10.0 =
 * Option « عرض كامل » (pleine largeur) par section : la grille sort du
   conteneur et s'étend d'un bord à l'autre de l'écran, les blocs se

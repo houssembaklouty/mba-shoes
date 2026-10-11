@@ -60,6 +60,7 @@ Exemple du widget « أقسام حسب التصنيف » (cartes produits group�
 - **Supprimer** : ouvrir le widget puis lien **« حذف »** (supprimer).
 - **Publier** : bouton **« نشر »** en haut du Customizer (dans l'écran Widgets,
   l'enregistrement est automatique).
+- **تمرير أفقي — défilement horizontal** : case à cocher dans les widgets أقسام حسب التصنيف et قسم المنتجات. Une seule rangée qui glisse au lieu de la grille empilée ; le nombre de colonnes choisit combien de cartes sont visibles d'un coup, les suivantes se révèlent au glissement (arrêt magnétique sur chaque carte).
 - **عرض كامل — pleine largeur** : case à cocher dans les widgets أقسام حسب التصنيف, قسم المنتجات et قسم التصنيفات (maquettes blocs égaux, grille, carrousel). La grille s'étend d'un bord à l'autre de l'écran, les blocs se répartissant selon le nombre de colonnes choisi ; le titre reste centré au-dessus.
 - **نسبة الصور — ratio des images** (1:1 par défaut, 4:3, 9:16, 7:10, 16:6) : disponible dans le widget أقسام حسب التصنيف, le widget قسم المنتجات, et le widget catégories (maquettes blocs égaux, grille, carrousel). Non applicable : mosaïque (composition fixe), cercles, bannière (réglage hauteur dédié).
 - **Traduire les textes** : chaque widget contient un bloc **« الترجمات »** pour saisir

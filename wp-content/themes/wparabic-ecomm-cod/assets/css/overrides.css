@@ -1348,6 +1348,39 @@ html:not([dir="rtl"]) #codplugin-checkout .form-qte {
   padding-inline: 15px;
 }
 
+/* --- Option « تمرير أفقي » : une seule rangee qui glisse --------------------
+   La grille (display:grid) devient une piste flex non retournable : les
+   cartes gardent la largeur qu'elles auraient a N colonnes (N = reglage
+   عدد الأعمدة = cartes visibles d'un coup d'oeil), les suivantes se
+   revelent au glissement. Magnétique (scroll-snap) : la piste s'arrete
+   proprement sur une carte. Le glissement RTL est natif. */
+.wparabic-scroll .row-items[class*="columns"] {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.wparabic-scroll .row-items[class*="columns"] > [class*="col-"] {
+  scroll-snap-align: start;
+  max-width: none;
+}
+
+.wparabic-scroll .row-items.columns-2 > [class*="col-"] { flex: 0 0 calc((100% - 1 * 25px) / 2); }
+.wparabic-scroll .row-items.columns-3 > [class*="col-"] { flex: 0 0 calc((100% - 2 * 25px) / 3); }
+.wparabic-scroll .row-items.columns-4 > [class*="col-"] { flex: 0 0 calc((100% - 3 * 25px) / 4); }
+.wparabic-scroll .row-items.columns-5 > [class*="col-"] { flex: 0 0 calc((100% - 4 * 25px) / 5); }
+.wparabic-scroll .row-items.columns-6 > [class*="col-"] { flex: 0 0 calc((100% - 5 * 25px) / 6); }
+
+/* Mobile : 1,8 carte visible pour signaler le glissement. */
+@media (max-width: 575px) {
+  .wparabic-scroll .row-items[class*="columns"] > [class*="col-"] {
+    flex: 0 0 calc((100% - 25px) * 0.55);
+  }
+}
+
 /* --- Widget « أقسام حسب التصنيف » : groupes de cartes produits, un par
    catégorie choisie ; l'espacement entre groupes vient de là. ---------- */
 .wparabic-pbc-group {
