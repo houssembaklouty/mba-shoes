@@ -53,6 +53,15 @@ Ressources tierces embarquees :
 
 == Changelog ==
 
+= 3.12.0 =
+* Defilement automatique du carrousel produits (option « تحريك تلقائي ») :
+* case d'activation + duree entre deux pas en secondes (2 a 20, defaut 4),
+  reglages visibles seulement quand le mode carrousel est coche (bascule
+  JS deleguee, meme mecanique que les champs par modele d'affichage).
+* En boucle : en fin de piste, retour en douceur au debut. Pause au
+  survol et pendant un appui (souris/doigt), reprise deux secondes apres.
+  Respect de prefers-reduced-motion : pas d'animation imposee.
+
 = 3.11.2 =
 * Fleches du carrousel produits visibles a TOUTES les largeurs : le
   carrousel categories les masquait sous 768 px, les cartes produits les

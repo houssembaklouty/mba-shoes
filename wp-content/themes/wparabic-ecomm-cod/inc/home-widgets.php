@@ -367,6 +367,9 @@ class WPArabic_Home_Widget_Products extends WPArabic_Home_Widget {
             'full_width' => 0,
             // Defilement horizontal : une seule rangee qu'on fait glisser.
             'scroll'   => 0,
+            // Defilement automatique du carrousel (secondes entre deux pas).
+            'autoplay' => 0,
+            'autoplay_sec' => 4,
         );
     }
 
@@ -420,8 +423,15 @@ class WPArabic_Home_Widget_Products extends WPArabic_Home_Widget {
         wparabic_home_section_heading($i['title'], $i['subtitle']);
         $ratio     = $this->sanitize_ratio($i['ratio'] ?? '1/1');
         $extra     = (empty($i['full_width']) ? '' : ' wparabic-row-full') . (empty($i['scroll']) ? '' : ' wparabic-scroll');
+        $carattr   = '';
+        if (!empty($i['scroll'])) {
+            $carattr = ' data-wparabic-carousel';
+            if (!empty($i['autoplay'])) {
+                $carattr .= ' data-autoplay="1" data-autoplay-ms="' . (max(2, min(20, absint($i['autoplay_sec'] ?? 4))) * 1000) . '"';
+            }
+        }
         ?>
-        <div class="woocommerce columns-<?php echo esc_attr($columns); ?> <?php echo esc_attr($extra); ?>"<?php echo empty($i['scroll']) ? '' : ' data-wparabic-carousel'; ?> style="--wparabic-thumb-ratio: <?php echo esc_attr($ratio); ?>">
+        <div class="woocommerce columns-<?php echo esc_attr($columns); ?> <?php echo esc_attr($extra); ?>"<?php echo $carattr; // phpcs:ignore WordPress.Security.EscapeOutput ?> style="--wparabic-thumb-ratio: <?php echo esc_attr($ratio); ?>">
             <?php if (!empty($i['scroll'])) : ?>
                 <button type="button" class="wparabic-cats-nav wparabic-cats-nav--prev" aria-label="<?php esc_attr_e('السابق', 'wparabic-ecomm-cod'); ?>"><i class="fas fa-chevron-right" aria-hidden="true"></i></button>
             <?php endif; ?>
@@ -466,6 +476,11 @@ class WPArabic_Home_Widget_Products extends WPArabic_Home_Widget {
         $this->field_select($i, 'ratio', __('نسبة الصور', 'wparabic-ecomm-cod'), self::ratio_choices());
         $this->field_checkbox($i, 'full_width', __('عرض كامل (من الحافة إلى الحافة)', 'wparabic-ecomm-cod'));
         $this->field_checkbox($i, 'scroll', __('عرض ككاروسيل (صف واحد بأسهم للتنقل)', 'wparabic-ecomm-cod'));
+        echo '<div class="wparabic-scroll-fields"' . (empty($i['scroll']) ? ' style="display:none"' : '') . '>';
+        $this->field_checkbox($i, 'autoplay', __('تحريك تلقائي للكاروسيل', 'wparabic-ecomm-cod'));
+        $this->field_text($i, 'autoplay_sec', __('المدة بين حركتين (بالثواني، 2-20)', 'wparabic-ecomm-cod'), 'number');
+        echo '<p class="description">' . esc_html__('يتوقف التحريك عند مرور المؤشر أو اللمس، ويستأنف بعدها. عند نهاية الصف يعود إلى البداية.', 'wparabic-ecomm-cod') . '</p>';
+        echo '</div>';
         $this->field_select($i, 'orderby', __('الترتيب', 'wparabic-ecomm-cod'), array(
             'date'       => __('الأحدث', 'wparabic-ecomm-cod'),
             'popularity' => __('الأكثر مبيعًا', 'wparabic-ecomm-cod'),
@@ -486,6 +501,8 @@ class WPArabic_Home_Widget_Products extends WPArabic_Home_Widget {
             'ratio'    => $this->sanitize_ratio($new['ratio'] ?? '1/1'),
             'full_width' => !empty($new['full_width']) ? 1 : 0,
             'scroll'   => !empty($new['scroll']) ? 1 : 0,
+            'autoplay' => !empty($new['autoplay']) ? 1 : 0,
+            'autoplay_sec' => max(2, min(20, absint($new['autoplay_sec'] ?? 4))),
         );
     }
 }
@@ -518,6 +535,9 @@ class WPArabic_Home_Widget_Products_By_Cat extends WPArabic_Home_Widget {
             'full_width' => 0,
             // Defilement horizontal : une seule rangee par groupe.
             'scroll'   => 0,
+            // Defilement automatique du carrousel (secondes entre deux pas).
+            'autoplay' => 0,
+            'autoplay_sec' => 4,
         );
     }
 
@@ -575,6 +595,13 @@ class WPArabic_Home_Widget_Products_By_Cat extends WPArabic_Home_Widget {
         $columns = in_array((int) $i['columns'], array(2, 3, 4, 5, 6), true) ? (int) $i['columns'] : 4;
         $ratio   = $this->sanitize_ratio($i['ratio'] ?? '1/1');
         $extra   = (empty($i['full_width']) ? '' : ' wparabic-row-full') . (empty($i['scroll']) ? '' : ' wparabic-scroll');
+        $carattr = '';
+        if (!empty($i['scroll'])) {
+            $carattr = ' data-wparabic-carousel';
+            if (!empty($i['autoplay'])) {
+                $carattr .= ' data-autoplay="1" data-autoplay-ms="' . (max(2, min(20, absint($i['autoplay_sec'] ?? 4))) * 1000) . '"';
+            }
+        }
 
         echo $args['before_widget']; // phpcs:ignore WordPress.Security.EscapeOutput
 
@@ -596,7 +623,7 @@ class WPArabic_Home_Widget_Products_By_Cat extends WPArabic_Home_Widget {
             ?>
             <div class="wparabic-pbc-group">
                 <?php wparabic_home_section_heading($group['title'], ''); ?>
-                <div class="woocommerce columns-<?php echo esc_attr($columns); ?> <?php echo esc_attr($extra); ?>"<?php echo empty($i['scroll']) ? '' : ' data-wparabic-carousel'; ?> style="--wparabic-thumb-ratio: <?php echo esc_attr($ratio); ?>">
+                <div class="woocommerce columns-<?php echo esc_attr($columns); ?> <?php echo esc_attr($extra); ?>"<?php echo $carattr; // phpcs:ignore WordPress.Security.EscapeOutput ?> style="--wparabic-thumb-ratio: <?php echo esc_attr($ratio); ?>">
                     <?php if (!empty($i['scroll'])) : ?>
                         <button type="button" class="wparabic-cats-nav wparabic-cats-nav--prev" aria-label="<?php esc_attr_e('السابق', 'wparabic-ecomm-cod'); ?>"><i class="fas fa-chevron-right" aria-hidden="true"></i></button>
                     <?php endif; ?>
@@ -645,6 +672,11 @@ class WPArabic_Home_Widget_Products_By_Cat extends WPArabic_Home_Widget {
         $this->field_select($i, 'ratio', __('نسبة الصور', 'wparabic-ecomm-cod'), self::ratio_choices());
         $this->field_checkbox($i, 'full_width', __('عرض كامل (من الحافة إلى الحافة)', 'wparabic-ecomm-cod'));
         $this->field_checkbox($i, 'scroll', __('عرض ككاروسيل (صف واحد بأسهم للتنقل)', 'wparabic-ecomm-cod'));
+        echo '<div class="wparabic-scroll-fields"' . (empty($i['scroll']) ? ' style="display:none"' : '') . '>';
+        $this->field_checkbox($i, 'autoplay', __('تحريك تلقائي للكاروسيل', 'wparabic-ecomm-cod'));
+        $this->field_text($i, 'autoplay_sec', __('المدة بين حركتين (بالثواني، 2-20)', 'wparabic-ecomm-cod'), 'number');
+        echo '<p class="description">' . esc_html__('يتوقف التحريك عند مرور المؤشر أو اللمس، ويستأنف بعدها. عند نهاية الصف يعود إلى البداية.', 'wparabic-ecomm-cod') . '</p>';
+        echo '</div>';
 
         $count = max(1, min(self::MAX_GROUPS, absint($i['groups'] ?? 2)));
         for ($n = 1; $n <= $count; $n++) {
@@ -699,6 +731,8 @@ class WPArabic_Home_Widget_Products_By_Cat extends WPArabic_Home_Widget {
             'ratio'    => $this->sanitize_ratio($new['ratio'] ?? '1/1'),
             'full_width' => !empty($new['full_width']) ? 1 : 0,
             'scroll'   => !empty($new['scroll']) ? 1 : 0,
+            'autoplay' => !empty($new['autoplay']) ? 1 : 0,
+            'autoplay_sec' => max(2, min(20, absint($new['autoplay_sec'] ?? 4))),
         );
 
         for ($n = 1; $n <= $clean['groups']; $n++) {

@@ -198,6 +198,58 @@
 			track.addEventListener('scroll', throttle(update, 60), { passive: true });
 			$(window).on('resize', throttle(update, 150));
 			update();
+
+			/* --- Defilement automatique (widgets produits, option « تحريك تلقائي »)
+			 * data-autoplay-ms sur le wrapper. En boucle : en fin de piste on
+			 * revient en douceur au debut. En pause au survol et pendant un
+			 * appui (souris ou doigt), reprise deux secondes apres. On respecte
+			 * prefers-reduced-motion : pas d'animation imposee. */
+			if (box.getAttribute('data-autoplay') === '1' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+				var delay = parseInt(box.getAttribute('data-autoplay-ms'), 10);
+				if (!delay || delay < 1000) {
+					delay = 4000;
+				}
+				var autoTimer = null;
+				var resumeTimer = null;
+
+				function autoStep() {
+					var max = track.scrollWidth - track.clientWidth;
+					var pos = Math.abs(track.scrollLeft);
+					if (max <= 2) {
+						return; // rien a faire defiler
+					}
+					if (pos >= max - 2) {
+						track.scrollTo({ left: 0, behavior: 'smooth' }); // retour au debut
+					} else {
+						go(1);
+					}
+				}
+
+				function autoStart() {
+					window.clearTimeout(resumeTimer);
+					if (!autoTimer) {
+						autoTimer = window.setInterval(autoStep, delay);
+					}
+				}
+
+				function autoStop() {
+					window.clearInterval(autoTimer);
+					autoTimer = null;
+					window.clearTimeout(resumeTimer);
+				}
+
+				function autoPause() {
+					autoStop();
+					resumeTimer = window.setTimeout(autoStart, 2000);
+				}
+
+				box.addEventListener('mouseenter', autoStop);
+				box.addEventListener('mouseleave', autoStart);
+				box.addEventListener('pointerdown', autoPause, { passive: true });
+				prev.addEventListener('click', autoPause);
+				next.addEventListener('click', autoPause);
+				autoStart();
+			}
 		});
 	}
 

@@ -85,4 +85,32 @@
 		var control = $(this).closest('.customize-control-widget_form');
 		setTimeout(function () { syncLayoutFields(control); }, 50);
 	});
+	/* --- Reglages du carrousel : visibles seulement si la case est cochee ----
+	 * .wparabic-scroll-fields (auto-play, duree) suit la case
+	 * [...][scroll]. Delegue et rejoue comme syncLayoutFields.
+	 */
+	function syncScrollFields(root) {
+		$(root).find('input[type="checkbox"][name$="[scroll]"]').each(function () {
+			var $form = $(this).closest('.widget-content, form, .widget-inside');
+			$form.find('.wparabic-scroll-fields').toggle(this.checked);
+		});
+	}
+
+	$(document).on('change', 'input[type="checkbox"][name$="[scroll]"]', function () {
+		syncScrollFields($(this).closest('.widget-content, form, .widget-inside'));
+	});
+
+	$(document).on('widget-added widget-updated', function (event, $widget) {
+		syncScrollFields($widget);
+	});
+	$(function () {
+		syncScrollFields(document);
+	});
+	$(document).on('expanded', '.customize-control-widget_form', function () {
+		syncScrollFields(this);
+	});
+	$(document).on('click', '.customize-control-widget_form .widget-top', function () {
+		var control = $(this).closest('.customize-control-widget_form');
+		setTimeout(function () { syncScrollFields(control); }, 50);
+	});
 })(jQuery);
