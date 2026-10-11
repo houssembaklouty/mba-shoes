@@ -39,6 +39,8 @@ services:
       # relais api/ ne sont plus deployes (un index.html a la racine
       # masquait la page d'accueil WordPress).
       - ./wp-content:/var/www/html/wp-content
+      # Certificat Let's Encrypt de 100cuir.com (certbot sur le VPS).
+      - /etc/letsencrypt:/etc/letsencrypt:ro
     depends_on:
       mysql:
         condition: service_healthy

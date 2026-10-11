@@ -13,6 +13,9 @@ RUN apt-get update && apt-get install -y \
 
 COPY auto-setup.sh /usr/local/bin/auto-setup.sh
 COPY php.ini /usr/local/etc/php/conf.d/custom.ini
-RUN chmod +x /usr/local/bin/auto-setup.sh
+COPY apache-ssl.conf /etc/apache2/sites-available/ssl.conf
+RUN chmod +x /usr/local/bin/auto-setup.sh \
+    && a2enmod ssl rewrite \
+    && a2ensite ssl.conf
 
 CMD bash -c "docker-entrypoint.sh apache2-foreground & sleep 30 && auto-setup.sh && wait"
