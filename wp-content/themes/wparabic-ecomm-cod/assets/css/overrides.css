@@ -1368,6 +1368,13 @@ html:not([dir="rtl"]) #codplugin-checkout .form-qte {
   max-width: none;
 }
 
+/* Le carrousel produits reutilise le JS + les fleches du carrousel
+   categories (data-wparabic-carousel) : il lui faut un contexte de
+   position pour les boutons. */
+.wparabic-scroll[data-wparabic-carousel] {
+  position: relative;
+}
+
 .wparabic-scroll .row-items.columns-2 > [class*="col-"] { flex: 0 0 calc((100% - 1 * 25px) / 2); }
 .wparabic-scroll .row-items.columns-3 > [class*="col-"] { flex: 0 0 calc((100% - 2 * 25px) / 3); }
 .wparabic-scroll .row-items.columns-4 > [class*="col-"] { flex: 0 0 calc((100% - 3 * 25px) / 4); }

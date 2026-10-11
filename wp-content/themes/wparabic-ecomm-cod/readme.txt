@@ -53,6 +53,14 @@ Ressources tierces embarquees :
 
 == Changelog ==
 
+= 3.11.1 =
+* Le mode « une seule rangee » devient un vrai carrousel : fleches
+  precedent/suivant (celles du carrousel categories, reutilisees avec son
+  JS data-wparabic-carousel), defilement de 85% de la largeur, arret
+  magnétique, fleches desactivees aux extremites, masque'es sur mobile ou
+  le glissement au doigt reste la gestuelle naturelle. Libelle de
+  l'option : « عرض ككاروسيل (صف واحد بأسهم للتنقل) ».
+
 = 3.11.0 =
 * Option « تمرير أفقي » (defilement horizontal) sur les widgets
   « أقسام حسب التصنيف » et « قسم المنتجات » : une seule rangee qui

@@ -421,8 +421,11 @@ class WPArabic_Home_Widget_Products extends WPArabic_Home_Widget {
         $ratio     = $this->sanitize_ratio($i['ratio'] ?? '1/1');
         $extra     = (empty($i['full_width']) ? '' : ' wparabic-row-full') . (empty($i['scroll']) ? '' : ' wparabic-scroll');
         ?>
-        <div class="woocommerce columns-<?php echo esc_attr($columns); ?> <?php echo esc_attr($extra); ?>" style="--wparabic-thumb-ratio: <?php echo esc_attr($ratio); ?>">
-            <div class="row row-items columns-<?php echo esc_attr($columns); ?>">
+        <div class="woocommerce columns-<?php echo esc_attr($columns); ?> <?php echo esc_attr($extra); ?>"<?php echo empty($i['scroll']) ? '' : ' data-wparabic-carousel'; ?> style="--wparabic-thumb-ratio: <?php echo esc_attr($ratio); ?>">
+            <?php if (!empty($i['scroll'])) : ?>
+                <button type="button" class="wparabic-cats-nav wparabic-cats-nav--prev" aria-label="<?php esc_attr_e('السابق', 'wparabic-ecomm-cod'); ?>"><i class="fas fa-chevron-right" aria-hidden="true"></i></button>
+            <?php endif; ?>
+            <div class="row row-items columns-<?php echo esc_attr($columns); ?> <?php echo empty($i['scroll']) ? '' : 'wparabic-cats-track'; ?>">
                 <?php
                 // wc_setup_loop + wc_get_template_part pour que
                 // content-product.php soit bien utilise : le shortcode
@@ -442,6 +445,9 @@ class WPArabic_Home_Widget_Products extends WPArabic_Home_Widget {
                 wp_reset_postdata();
                 ?>
             </div>
+            <?php if (!empty($i['scroll'])) : ?>
+                <button type="button" class="wparabic-cats-nav wparabic-cats-nav--next" aria-label="<?php esc_attr_e('التالي', 'wparabic-ecomm-cod'); ?>"><i class="fas fa-chevron-left" aria-hidden="true"></i></button>
+            <?php endif; ?>
         </div>
         <?php
 
@@ -459,7 +465,7 @@ class WPArabic_Home_Widget_Products extends WPArabic_Home_Widget {
         $this->field_select($i, 'columns', __('عدد الأعمدة', 'wparabic-ecomm-cod'), array(4 => '4', 5 => '5'));
         $this->field_select($i, 'ratio', __('نسبة الصور', 'wparabic-ecomm-cod'), self::ratio_choices());
         $this->field_checkbox($i, 'full_width', __('عرض كامل (من الحافة إلى الحافة)', 'wparabic-ecomm-cod'));
-        $this->field_checkbox($i, 'scroll', __('تمرير أفقي (صف واحد ينزلق بدلاً من الشبكة)', 'wparabic-ecomm-cod'));
+        $this->field_checkbox($i, 'scroll', __('عرض ككاروسيل (صف واحد بأسهم للتنقل)', 'wparabic-ecomm-cod'));
         $this->field_select($i, 'orderby', __('الترتيب', 'wparabic-ecomm-cod'), array(
             'date'       => __('الأحدث', 'wparabic-ecomm-cod'),
             'popularity' => __('الأكثر مبيعًا', 'wparabic-ecomm-cod'),
@@ -590,8 +596,11 @@ class WPArabic_Home_Widget_Products_By_Cat extends WPArabic_Home_Widget {
             ?>
             <div class="wparabic-pbc-group">
                 <?php wparabic_home_section_heading($group['title'], ''); ?>
-                <div class="woocommerce columns-<?php echo esc_attr($columns); ?> <?php echo esc_attr($extra); ?>" style="--wparabic-thumb-ratio: <?php echo esc_attr($ratio); ?>">
-                    <div class="row row-items columns-<?php echo esc_attr($columns); ?>">
+                <div class="woocommerce columns-<?php echo esc_attr($columns); ?> <?php echo esc_attr($extra); ?>"<?php echo empty($i['scroll']) ? '' : ' data-wparabic-carousel'; ?> style="--wparabic-thumb-ratio: <?php echo esc_attr($ratio); ?>">
+                    <?php if (!empty($i['scroll'])) : ?>
+                        <button type="button" class="wparabic-cats-nav wparabic-cats-nav--prev" aria-label="<?php esc_attr_e('السابق', 'wparabic-ecomm-cod'); ?>"><i class="fas fa-chevron-right" aria-hidden="true"></i></button>
+                    <?php endif; ?>
+                    <div class="row row-items columns-<?php echo esc_attr($columns); ?> <?php echo empty($i['scroll']) ? '' : 'wparabic-cats-track'; ?>">
                         <?php
                         // Meme rendu que le widget « قسم المنتجات » : cartes
                         // completes (photo, badge, prix) via content-product.php.
@@ -610,6 +619,9 @@ class WPArabic_Home_Widget_Products_By_Cat extends WPArabic_Home_Widget {
                         wp_reset_postdata();
                         ?>
                     </div>
+                    <?php if (!empty($i['scroll'])) : ?>
+                        <button type="button" class="wparabic-cats-nav wparabic-cats-nav--next" aria-label="<?php esc_attr_e('التالي', 'wparabic-ecomm-cod'); ?>"><i class="fas fa-chevron-left" aria-hidden="true"></i></button>
+                    <?php endif; ?>
                 </div>
             </div>
             <?php
@@ -632,7 +644,7 @@ class WPArabic_Home_Widget_Products_By_Cat extends WPArabic_Home_Widget {
         $this->field_select($i, 'columns', __('عدد الأعمدة', 'wparabic-ecomm-cod'), array(2 => '2', 3 => '3', 4 => '4', 5 => '5', 6 => '6'));
         $this->field_select($i, 'ratio', __('نسبة الصور', 'wparabic-ecomm-cod'), self::ratio_choices());
         $this->field_checkbox($i, 'full_width', __('عرض كامل (من الحافة إلى الحافة)', 'wparabic-ecomm-cod'));
-        $this->field_checkbox($i, 'scroll', __('تمرير أفقي (صف واحد ينزلق بدلاً من الشبكة)', 'wparabic-ecomm-cod'));
+        $this->field_checkbox($i, 'scroll', __('عرض ككاروسيل (صف واحد بأسهم للتنقل)', 'wparabic-ecomm-cod'));
 
         $count = max(1, min(self::MAX_GROUPS, absint($i['groups'] ?? 2)));
         for ($n = 1; $n <= $count; $n++) {
