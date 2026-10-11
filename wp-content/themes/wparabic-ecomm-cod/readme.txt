@@ -53,6 +53,12 @@ Ressources tierces embarquees :
 
 == Changelog ==
 
+= 3.11.2 =
+* Fleches du carrousel produits visibles a TOUTES les largeurs : le
+  carrousel categories les masquait sous 768 px, les cartes produits les
+  affichent desormais aussi en version compacte (34 px, rentrees de 4 px
+  des le bord) — le glissement au doigt reste possible en parallele.
+
 = 3.11.1 =
 * Le mode « une seule rangee » devient un vrai carrousel : fleches
   precedent/suivant (celles du carrousel categories, reutilisees avec son

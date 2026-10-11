@@ -1526,6 +1526,48 @@ html:not([dir="rtl"]) #codplugin-checkout .form-qte {
   }
 }
 
+/* --- Carrousel produits : fleches visibles a TOUTES les largeurs ------------
+   Le carrousel categories les masque sous 768 px (glissement au doigt) ;
+   pour les cartes produits on les veut toujours la : c'est un carrousel
+   assume, avec ses deux boutons, meme sur petit ecran (ou le glissement
+   reste possible en parallele). Version compacte, rentree de quelques px
+   pour ne pas deborder. */
+@media (max-width: 767px) {
+  .wparabic-scroll .wparabic-cats-nav {
+    position: absolute;
+    top: 40%;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 1px solid #e1e5e5;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 4px 14px -4px rgba(0, 0, 0, 0.25);
+    color: #222;
+    cursor: pointer;
+    transform: translateY(-50%);
+  }
+  .wparabic-scroll .wparabic-cats-nav:hover {
+    background: var(--wparabic-accent, #ea593c);
+    border-color: var(--wparabic-accent, #ea593c);
+    color: #fff;
+  }
+  .wparabic-scroll .wparabic-cats-nav--prev {
+    inset-inline-start: 4px;
+  }
+  .wparabic-scroll .wparabic-cats-nav--next {
+    inset-inline-end: 4px;
+  }
+  .wparabic-scroll .wparabic-cats-nav[disabled] {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
 @media (min-width: 992px) {
   .wparabic-cats--carousel .wparabic-cat {
     flex-basis: calc((100% - 3 * 20px) / 4);
