@@ -1268,7 +1268,8 @@ html:not([dir="rtl"]) #codplugin-checkout .form-qte {
   }
 }
 
-.wparabic-cats--equal .wparabic-cat-link {
+.wparabic-cats--equal .wparabic-cat-link,
+.wparabic-cats--selection .wparabic-cat-link {
   position: relative;
   display: block;
   overflow: hidden;
@@ -1276,11 +1277,13 @@ html:not([dir="rtl"]) #codplugin-checkout .form-qte {
   background: #222;
 }
 
-.wparabic-cats--equal .wparabic-cat-media {
+.wparabic-cats--equal .wparabic-cat-media,
+.wparabic-cats--selection .wparabic-cat-media {
   aspect-ratio: 4 / 3;
 }
 
-.wparabic-cats--equal .wparabic-cat-caption {
+.wparabic-cats--equal .wparabic-cat-caption,
+.wparabic-cats--selection .wparabic-cat-caption {
   position: absolute;
   inset-inline: 0;
   bottom: 0;
@@ -1291,12 +1294,52 @@ html:not([dir="rtl"]) #codplugin-checkout .form-qte {
   background: linear-gradient(to top, rgb(0 0 0 / 55%), transparent);
 }
 
-.wparabic-cats--equal .wparabic-cat-name {
+.wparabic-cats--equal .wparabic-cat-name,
+.wparabic-cats--selection .wparabic-cat-name {
   color: #fff;
 }
 
-.wparabic-cats--equal .wparabic-cat-count {
+.wparabic-cats--equal .wparabic-cat-count,
+.wparabic-cats--selection .wparabic-cat-count {
   color: rgb(255 255 255 / 85%);
+}
+
+/* --- Blocs selectionnes : une piste flex par rangee, le motif de l'admin
+   (--cols en style inline) ne s'applique qu'au-dela de la tablette. */
+.wparabic-cats--selection .wparabic-cats-row {
+  --gap: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--gap);
+  margin: 0 0 12px;
+}
+
+.wparabic-cats--selection .wparabic-cats-row:last-child {
+  margin-bottom: 0;
+}
+
+.wparabic-cats--selection .wparabic-cat {
+  flex: 0 0 calc((100% - (var(--cols) - 1) * var(--gap)) / var(--cols));
+}
+
+@media (min-width: 768px) {
+  .wparabic-cats--selection .wparabic-cats-row {
+    --gap: 20px;
+  }
+}
+
+/* Le !important gere l'arbitraire du motif inline en dessous de 992 px. */
+@media (max-width: 767px) {
+  .wparabic-cats--selection .wparabic-cats-row {
+    --cols: 2 !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .wparabic-cats--selection .wparabic-cats-row {
+    --cols: 3 !important;
+  }
 }
 
 /* --- Cercles : une rangee qui defile au doigt sur mobile, lignes centrees

@@ -53,6 +53,19 @@ Ressources tierces embarquees :
 
 == Changelog ==
 
+= 3.7.0 =
+* Section categories, nouveau modele « كتل مختارة (تصنيف + منتج) » : des
+  blocs composes par l'admin — chaque bloc montre la photo du produit choisi,
+  porte le nom de la categorie choisie en calque et mene a la fiche du produit.
+* Repartition des blocs par motif de rangees choisi par l'admin (ex. 3,3,4,
+  4,4, 2,2,2,2) : 1 a 6 blocs par rangee, 24 blocs au maximum. Le formulaire
+  genere un couple de selecteurs (categorie + produit) par emplacement ;
+  changer le motif puis enregistrer regenere la liste.
+* Les selecteurs produits sont groupes par categorie ; en dessous de 992 px
+  le motif laisse place au mobile-first (2 colonnes, puis 3 sur tablette).
+* Un bloc incomplet (categorie ou produit manquant) n'est pas affiche ; la
+  section ne s'affiche pas si aucun bloc n'est complet.
+
 = 3.6.0 =
 * Section categories, nouveau modele « بلاطات متساوية » : tuiles plein cadre
   de meme taille, nom du categorie (et nombre de produits au choix) en calque
