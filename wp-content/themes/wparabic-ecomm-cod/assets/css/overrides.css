@@ -1196,7 +1196,9 @@ html:not([dir="rtl"]) #codplugin-checkout .form-qte {
 
 .wparabic-cats--grid .wparabic-cat-media,
 .wparabic-cats--carousel .wparabic-cat-media {
-  aspect-ratio: 1 / 1;
+  /* Ratio reglable par l'admin (widget, « نسبة الصور ») via la variable
+     posee sur .wparabic-cats ; 1/1 par defaut. */
+  aspect-ratio: var(--wparabic-ratio, 1 / 1);
 }
 
 .wparabic-cats--grid .wparabic-cat-name,
@@ -1277,7 +1279,8 @@ html:not([dir="rtl"]) #codplugin-checkout .form-qte {
 }
 
 .wparabic-cats--equal .wparabic-cat-media {
-  aspect-ratio: 4 / 3;
+  /* Ratio reglable par l'admin (widget, « نسبة الصور »), 1/1 par defaut. */
+  aspect-ratio: var(--wparabic-ratio, 1 / 1);
 }
 
 .wparabic-cats--equal .wparabic-cat-caption {

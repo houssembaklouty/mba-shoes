@@ -60,6 +60,7 @@ Exemple du widget « أقسام حسب التصنيف » (cartes produits group�
 - **Supprimer** : ouvrir le widget puis lien **« حذف »** (supprimer).
 - **Publier** : bouton **« نشر »** en haut du Customizer (dans l'écran Widgets,
   l'enregistrement est automatique).
+- **نسبة الصور — ratio des images** (1:1 par défaut, 4:3, 9:16, 16:6) : disponible dans le widget أقسام حسب التصنيف, le widget قسم المنتجات, et le widget catégories (maquettes blocs égaux, grille, carrousel). Non applicable : mosaïque (composition fixe), cercles, bannière (réglage hauteur dédié).
 - **Traduire les textes** : chaque widget contient un bloc **« الترجمات »** pour saisir
   les variantes par langue (les visiteurs voient la version de leur langue).
 

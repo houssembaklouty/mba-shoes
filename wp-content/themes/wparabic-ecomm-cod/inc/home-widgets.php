@@ -239,6 +239,27 @@ abstract class WPArabic_Home_Widget extends WP_Widget {
         return !empty($new['enabled']) ? 1 : 0;
     }
 
+    /**
+     * Ratios d'images proposes aux sections de la page d'accueil.
+     * Cles au format CSS (utilisees telles quelles dans aspect-ratio),
+     * libelles au format humain.
+     *
+     * @return array<string,string>
+     */
+    protected static function ratio_choices() {
+        return array(
+            '1/1'  => '1:1',
+            '4/3'  => '4:3',
+            '9/16' => '9:16',
+            '16/6' => '16:6',
+        );
+    }
+
+    /** Ratio valide ('1/1' par defaut). */
+    protected function sanitize_ratio($value) {
+        return array_key_exists((string) $value, self::ratio_choices()) ? (string) $value : '1/1';
+    }
+
     protected function field_text($instance, $key, $label, $type = 'text') {
         $value = isset($instance[$key]) ? $instance[$key] : '';
         printf(
@@ -340,6 +361,7 @@ class WPArabic_Home_Widget_Products extends WPArabic_Home_Widget {
             'columns'  => 5,
             'orderby'  => 'date',
             'cat'      => 0,
+            'ratio'    => '1/1',
         );
     }
 
@@ -391,8 +413,9 @@ class WPArabic_Home_Widget_Products extends WPArabic_Home_Widget {
         echo $args['before_widget']; // phpcs:ignore WordPress.Security.EscapeOutput
 
         wparabic_home_section_heading($i['title'], $i['subtitle']);
+        $ratio = $this->sanitize_ratio($i['ratio'] ?? '1/1');
         ?>
-        <div class="woocommerce columns-<?php echo esc_attr($columns); ?> ">
+        <div class="woocommerce columns-<?php echo esc_attr($columns); ?> " style="--wparabic-thumb-ratio: <?php echo esc_attr($ratio); ?>">
             <div class="row row-items columns-<?php echo esc_attr($columns); ?>">
                 <?php
                 // wc_setup_loop + wc_get_template_part pour que
@@ -428,6 +451,7 @@ class WPArabic_Home_Widget_Products extends WPArabic_Home_Widget {
         $this->field_text($i, 'subtitle', __('الوصف', 'wparabic-ecomm-cod'));
         $this->field_text($i, 'number', __('عدد المنتجات', 'wparabic-ecomm-cod'), 'number');
         $this->field_select($i, 'columns', __('عدد الأعمدة', 'wparabic-ecomm-cod'), array(4 => '4', 5 => '5'));
+        $this->field_select($i, 'ratio', __('نسبة الصور', 'wparabic-ecomm-cod'), self::ratio_choices());
         $this->field_select($i, 'orderby', __('الترتيب', 'wparabic-ecomm-cod'), array(
             'date'       => __('الأحدث', 'wparabic-ecomm-cod'),
             'popularity' => __('الأكثر مبيعًا', 'wparabic-ecomm-cod'),
@@ -445,6 +469,7 @@ class WPArabic_Home_Widget_Products extends WPArabic_Home_Widget {
             'columns'  => in_array((int) ($new['columns'] ?? 5), array(4, 5), true) ? (int) $new['columns'] : 5,
             'orderby'  => in_array($new['orderby'] ?? 'date', array('date', 'popularity', 'rand'), true) ? $new['orderby'] : 'date',
             'cat'      => absint($new['cat'] ?? 0),
+            'ratio'    => $this->sanitize_ratio($new['ratio'] ?? '1/1'),
         );
     }
 }
@@ -472,6 +497,7 @@ class WPArabic_Home_Widget_Products_By_Cat extends WPArabic_Home_Widget {
             'subtitle' => '',
             'groups'   => 2,
             'columns'  => 4,
+            'ratio'    => '1/1',
         );
     }
 
@@ -527,6 +553,7 @@ class WPArabic_Home_Widget_Products_By_Cat extends WPArabic_Home_Widget {
         }
 
         $columns = in_array((int) $i['columns'], array(2, 3, 4, 5, 6), true) ? (int) $i['columns'] : 4;
+        $ratio   = $this->sanitize_ratio($i['ratio'] ?? '1/1');
 
         echo $args['before_widget']; // phpcs:ignore WordPress.Security.EscapeOutput
 
@@ -548,7 +575,7 @@ class WPArabic_Home_Widget_Products_By_Cat extends WPArabic_Home_Widget {
             ?>
             <div class="wparabic-pbc-group">
                 <?php wparabic_home_section_heading($group['title'], ''); ?>
-                <div class="woocommerce columns-<?php echo esc_attr($columns); ?> ">
+                <div class="woocommerce columns-<?php echo esc_attr($columns); ?> " style="--wparabic-thumb-ratio: <?php echo esc_attr($ratio); ?>">
                     <div class="row row-items columns-<?php echo esc_attr($columns); ?>">
                         <?php
                         // Meme rendu que le widget « قسم المنتجات » : cartes
@@ -588,6 +615,7 @@ class WPArabic_Home_Widget_Products_By_Cat extends WPArabic_Home_Widget {
         $this->field_text($i, 'groups', __('عدد الأقسام (1-6)', 'wparabic-ecomm-cod'), 'number');
         echo '<p class="description">' . esc_html__('بعد تغيير عدد الأقسام احفظ النموذج لتحديث القوائم.', 'wparabic-ecomm-cod') . '</p>';
         $this->field_select($i, 'columns', __('عدد الأعمدة', 'wparabic-ecomm-cod'), array(2 => '2', 3 => '3', 4 => '4', 5 => '5', 6 => '6'));
+        $this->field_select($i, 'ratio', __('نسبة الصور', 'wparabic-ecomm-cod'), self::ratio_choices());
 
         $count = max(1, min(self::MAX_GROUPS, absint($i['groups'] ?? 2)));
         for ($n = 1; $n <= $count; $n++) {
@@ -639,6 +667,7 @@ class WPArabic_Home_Widget_Products_By_Cat extends WPArabic_Home_Widget {
             'subtitle' => sanitize_text_field($new['subtitle'] ?? ''),
             'groups'   => max(1, min(self::MAX_GROUPS, absint($new['groups'] ?? 2))),
             'columns'  => in_array((int) ($new['columns'] ?? 4), array(2, 3, 4, 5, 6), true) ? (int) $new['columns'] : 4,
+            'ratio'    => $this->sanitize_ratio($new['ratio'] ?? '1/1'),
         );
 
         for ($n = 1; $n <= $clean['groups']; $n++) {
@@ -820,6 +849,8 @@ class WPArabic_Home_Widget_Categories extends WPArabic_Home_Widget {
             'limit'      => 8,
             'columns'    => 4,
             'show_count' => 1,
+            // Ratio des vignettes (blocs egaux, grille, carrousel).
+            'ratio'      => '1/1',
         );
     }
 
@@ -994,9 +1025,10 @@ class WPArabic_Home_Widget_Categories extends WPArabic_Home_Widget {
         $columns = in_array((int) $i['columns'], array(2, 3, 4, 5, 6), true) ? (int) $i['columns'] : 4;
         $classes = 'wparabic-cats wparabic-cats--' . $layout
             . (in_array($layout, array('grid', 'equal'), true) ? ' wparabic-cats--cols-' . $columns : '');
+        $ratio = $this->sanitize_ratio($i['ratio'] ?? '1/1');
         $size = $layout === 'circles' ? 'woocommerce_thumbnail' : ($layout === 'equal' ? 'large' : 'medium_large');
         ?>
-        <div class="<?php echo esc_attr($classes); ?>"<?php echo $layout === 'carousel' ? ' data-wparabic-carousel' : ''; ?>>
+        <div class="<?php echo esc_attr($classes); ?>" style="--wparabic-ratio: <?php echo esc_attr($ratio); ?>"<?php echo $layout === 'carousel' ? ' data-wparabic-carousel' : ''; ?>>
             <?php if ($layout === 'carousel') : ?>
                 <button type="button" class="wparabic-cats-nav wparabic-cats-nav--prev" aria-label="<?php esc_attr_e('السابق', 'wparabic-ecomm-cod'); ?>"><i class="fas fa-chevron-right" aria-hidden="true"></i></button>
             <?php endif; ?>
@@ -1093,6 +1125,9 @@ class WPArabic_Home_Widget_Categories extends WPArabic_Home_Widget {
         echo '</div>';
 
         // --- Blocs egaux, grille, cercles, carrousel.
+        echo '<div class="wparabic-layout-fields" data-layouts="equal,grid,carousel">';
+        $this->field_select($i, 'ratio', __('نسبة الصور', 'wparabic-ecomm-cod'), self::ratio_choices());
+        echo '</div>';
         echo '<div class="wparabic-layout-fields" data-layouts="grid,equal,circles,carousel">';
         $this->field_category_checklist($i);
         $this->field_text($i, 'limit', __('العدد الأقصى للتصنيفات', 'wparabic-ecomm-cod'), 'number');
@@ -1144,6 +1179,7 @@ class WPArabic_Home_Widget_Categories extends WPArabic_Home_Widget {
             'cats'       => array_values(array_filter(array_map('absint', (array) ($new['cats'] ?? array())))),
             'limit'      => max(1, min(self::MAX_ITEMS, absint($new['limit'] ?? 8))),
             'columns'    => in_array((int) ($new['columns'] ?? 4), array(2, 3, 4, 5, 6), true) ? (int) $new['columns'] : 4,
+            'ratio'      => $this->sanitize_ratio($new['ratio'] ?? '1/1'),
             'show_count' => !empty($new['show_count']) ? 1 : 0,
         );
     }

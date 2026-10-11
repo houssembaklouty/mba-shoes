@@ -53,6 +53,19 @@ Ressources tierces embarquees :
 
 == Changelog ==
 
+= 3.9.0 =
+* Option « نسبة الصور » (ratio des images) sur les sections d'accueil :
+  1:1 (défaut), 4:3, 9:16 ou 16:6, au choix de l'admin, indépendamment
+  pour chaque section.
+* Concerne : le widget « أقسام حسب التصنيف », le widget « قسم المنتجات »
+  (cartes produits, via la variable --wparabic-thumb-ratio déjà lue par
+  .item-thumb img) et les modèles بلاطات متساوية / شبكة / شريط متحرك du
+  widget catégories (variable --wparabic-ratio).
+* Non concerné par construction : mosaïque (composition fixe), cercles
+  (rondes), bannière (réglage hauteur dédié).
+* Conséquence du défaut 1:1 : les blocs égaux, avant en 4:3 figé,
+  deviennent carrés par défaut (l'admin peut revenir à 4:3).
+
 = 3.8.0 =
 * Nouveau widget d'accueil « أقسام حسب التصنيف » : pour chaque categorie
   choisie par l'admin, une section avec en-tete (nom de la categorie ou
