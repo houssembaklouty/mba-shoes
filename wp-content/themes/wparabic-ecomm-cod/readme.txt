@@ -53,6 +53,22 @@ Ressources tierces embarquees :
 
 == Changelog ==
 
+= 3.8.0 =
+* Nouveau widget d'accueil « أقسام حسب التصنيف » : pour chaque categorie
+  choisie par l'admin, une section avec en-tete (nom de la categorie ou
+  titre personnalise) et une grille de cartes produits complets (photo,
+  badge promo, prix) — les produits affiches dans chaque categorie sont
+  choisis par l'admin par cases a cocher.
+* Jusqu'a 6 groupes categorie/produits, colonnes 2 a 6 partagees, en-tete
+  global facultatif. Changer le nombre de groupes puis enregistrer
+  regenere le formulaire (mecanisme natif, aucun JS ajoute).
+* Rendu identique au widget « قسم المنتجات » (content-product.php du
+  theme). Groupe incomplet ecarte ; section non affichee si aucun groupe
+  n'est complet.
+* Retrait du modele « كتل مختارة » du widget categories (remplace par ce
+  widget) : le selecteur revient aux 5 modeles (mosaique, blocs egaux,
+  grille, cercles, carrousel).
+
 = 3.7.0 =
 * Section categories, nouveau modele « كتل مختارة (تصنيف + منتج) » : des
   blocs composes par l'admin — chaque bloc montre la photo du produit choisi,

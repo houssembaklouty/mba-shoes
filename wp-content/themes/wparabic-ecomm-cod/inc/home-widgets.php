@@ -450,6 +450,208 @@ class WPArabic_Home_Widget_Products extends WPArabic_Home_Widget {
 }
 
 /* -------------------------------------------------------------------------
+ * 1 bis. Sections produits par categorie
+ * ------------------------------------------------------------------------- */
+
+class WPArabic_Home_Widget_Products_By_Cat extends WPArabic_Home_Widget {
+
+    /** Nombre maximum de groupes (une categorie + ses produits). */
+    const MAX_GROUPS = 6;
+
+    public function __construct() {
+        parent::__construct('at-home-products-by-cat', wparabic_widget_name(__('أقسام حسب التصنيف', 'wparabic-ecomm-cod')), array(
+            'description' => __('لكل تصنيف تختاره : عنوان + شبكة منتجات تختارها بنفسك.', 'wparabic-ecomm-cod'),
+        ));
+    }
+
+    public function defaults() {
+        return array(
+            'enabled'  => 1,
+            // En-tete global facultatif : vide = aucun titre au-dessus des groupes.
+            'title'    => '',
+            'subtitle' => '',
+            'groups'   => 2,
+            'columns'  => 4,
+        );
+    }
+
+    /**
+     * Groupes affichables : categorie valide + au moins un produit choisi
+     * encore publie. L'ordre suit la numerotation des groupes.
+     *
+     * @return array<int, array{term:WP_Term, title:string, products:int[]}>
+     */
+    protected function resolved_groups($i) {
+        $groups = array();
+        $count  = max(1, min(self::MAX_GROUPS, absint($i['groups'] ?? 2)));
+
+        for ($n = 1; $n <= $count; $n++) {
+            $cat_id = absint($i['g' . $n . '_cat'] ?? 0);
+            if (!$cat_id) {
+                continue;
+            }
+            $term = get_term($cat_id, 'product_cat');
+            if (!$term || is_wp_error($term)) {
+                continue;
+            }
+
+            $ids = array_values(array_filter(array_map('absint', (array) ($i['g' . $n . '_products'] ?? array()))));
+            if (!$ids) {
+                continue;
+            }
+
+            $title = trim((string) ($i['g' . $n . '_title'] ?? ''));
+            $groups[] = array(
+                'term'     => $term,
+                'title'    => $title !== '' ? $title : $term->name,
+                'products' => $ids,
+            );
+        }
+
+        return $groups;
+    }
+
+    public function widget($args, $instance) {
+        if ($this->is_disabled($instance)) {
+            return; // AVANT before_widget : pas de <section> vide.
+        }
+
+        if (!function_exists('wc_get_template_part')) {
+            return;
+        }
+
+        $i      = $this->prepare($instance);
+        $groups = $this->resolved_groups($i);
+        if (!$groups) {
+            return;
+        }
+
+        $columns = in_array((int) $i['columns'], array(2, 3, 4, 5, 6), true) ? (int) $i['columns'] : 4;
+
+        echo $args['before_widget']; // phpcs:ignore WordPress.Security.EscapeOutput
+
+        wparabic_home_section_heading($i['title'], $i['subtitle']);
+
+        foreach ($groups as $group) :
+            $products = new WP_Query(array(
+                'post_type'           => 'product',
+                'post_status'         => 'publish',
+                'post__in'            => $group['products'],
+                'orderby'             => 'post__in',
+                'posts_per_page'      => count($group['products']),
+                'ignore_sticky_posts' => true,
+            ));
+            if (!$products->have_posts()) {
+                wp_reset_postdata();
+                continue;
+            }
+            ?>
+            <div class="wparabic-pbc-group">
+                <?php wparabic_home_section_heading($group['title'], ''); ?>
+                <div class="woocommerce columns-<?php echo esc_attr($columns); ?> ">
+                    <div class="row row-items columns-<?php echo esc_attr($columns); ?>">
+                        <?php
+                        // Meme rendu que le widget « قسم المنتجات » : cartes
+                        // completes (photo, badge, prix) via content-product.php.
+                        if (function_exists('wc_setup_loop')) {
+                            wc_setup_loop(array('columns' => $columns));
+                        }
+
+                        while ($products->have_posts()) {
+                            $products->the_post();
+                            wc_get_template_part('content', 'product');
+                        }
+
+                        if (function_exists('wc_reset_loop')) {
+                            wc_reset_loop();
+                        }
+                        wp_reset_postdata();
+                        ?>
+                    </div>
+                </div>
+            </div>
+            <?php
+        endforeach;
+
+        echo $args['after_widget']; // phpcs:ignore WordPress.Security.EscapeOutput
+    }
+
+    public function form($instance) {
+        $i       = wp_parse_args((array) $instance, $this->defaults());
+        $choices = $this->category_choices();
+
+        $this->field_enabled($i);
+
+        echo '<p><strong>' . esc_html__('عنوان عام (اختياري)', 'wparabic-ecomm-cod') . '</strong></p>';
+        $this->field_text($i, 'title', __('العنوان', 'wparabic-ecomm-cod'));
+        $this->field_text($i, 'subtitle', __('الوصف', 'wparabic-ecomm-cod'));
+        $this->field_text($i, 'groups', __('عدد الأقسام (1-6)', 'wparabic-ecomm-cod'), 'number');
+        echo '<p class="description">' . esc_html__('بعد تغيير عدد الأقسام احفظ النموذج لتحديث القوائم.', 'wparabic-ecomm-cod') . '</p>';
+        $this->field_select($i, 'columns', __('عدد الأعمدة', 'wparabic-ecomm-cod'), array(2 => '2', 3 => '3', 4 => '4', 5 => '5', 6 => '6'));
+
+        $count = max(1, min(self::MAX_GROUPS, absint($i['groups'] ?? 2)));
+        for ($n = 1; $n <= $count; $n++) {
+            echo '<hr><p style="margin:4px 0"><strong>' . esc_html(sprintf(
+                /* translators: %d: group number */
+                __('القسم %d', 'wparabic-ecomm-cod'),
+                $n
+            )) . '</strong></p>';
+            $this->field_select($i, 'g' . $n . '_cat', __('التصنيف', 'wparabic-ecomm-cod'), $choices);
+            $this->field_text($i, 'g' . $n . '_title', __('عنوان مخصص (اختياري)', 'wparabic-ecomm-cod'));
+            $this->field_product_checklist($i, $n);
+        }
+    }
+
+    /** Cases a cocher des produits publiés pour le groupe N. */
+    protected function field_product_checklist($i, $n) {
+        $posts = get_posts(array(
+            'post_type'   => 'product',
+            'post_status' => 'publish',
+            'numberposts' => 200,
+            'orderby'     => 'title',
+            'order'       => 'ASC',
+            'fields'      => 'ids',
+        ));
+
+        $selected = array_map('absint', (array) ($i['g' . $n . '_products'] ?? array()));
+
+        echo '<p style="margin-bottom:4px"><span class="description">' . esc_html__('المنتجات المعروضة', 'wparabic-ecomm-cod') . '</span></p>';
+        echo '<div style="max-height:180px;overflow:auto;border:1px solid #dcdcde;padding:6px 8px;margin-bottom:12px">';
+        foreach ($posts as $id) {
+            $terms = get_the_terms($id, 'product_cat');
+            $cat = (is_array($terms) && $terms) ? $terms[0]->name : null;
+            printf(
+                '<label style="display:block;margin:3px 0"><input type="checkbox" name="%1$s[]" value="%2$d"%3$s> %4$s%5$s</label>',
+                esc_attr($this->get_field_name('g' . $n . '_products')),
+                (int) $id,
+                checked(in_array((int) $id, $selected, true), true, false),
+                esc_html(get_the_title($id)),
+                $cat ? ' <span style="color:#8c8f94">(' . esc_html($cat) . ')</span>' : ''
+            );
+        }
+        echo '</div>';
+    }
+
+    public function update($new, $old) {
+        $clean = array(
+            'enabled'  => $this->save_enabled($new),
+            'title'    => sanitize_text_field($new['title'] ?? ''),
+            'subtitle' => sanitize_text_field($new['subtitle'] ?? ''),
+            'groups'   => max(1, min(self::MAX_GROUPS, absint($new['groups'] ?? 2))),
+            'columns'  => in_array((int) ($new['columns'] ?? 4), array(2, 3, 4, 5, 6), true) ? (int) $new['columns'] : 4,
+        );
+
+        for ($n = 1; $n <= $clean['groups']; $n++) {
+            $clean['g' . $n . '_cat']      = absint($new['g' . $n . '_cat'] ?? 0);
+            $clean['g' . $n . '_title']    = sanitize_text_field($new['g' . $n . '_title'] ?? '');
+            $clean['g' . $n . '_products'] = array_values(array_filter(array_map('absint', (array) ($new['g' . $n . '_products'] ?? array()))));
+        }
+
+        return $clean;
+    }
+}
+
+/* -------------------------------------------------------------------------
  * 2. Arguments de reassurance
  * ------------------------------------------------------------------------- */
 
@@ -594,12 +796,11 @@ class WPArabic_Home_Widget_Categories extends WPArabic_Home_Widget {
      */
     public static function layouts() {
         return array(
-            'mosaic'    => __('فسيفساء (كبيرة + متوسطتان + عريضة)', 'wparabic-ecomm-cod'),
-            'equal'     => __('بلاطات متساوية', 'wparabic-ecomm-cod'),
-            'selection' => __('كتل مختارة (تصنيف + منتج)', 'wparabic-ecomm-cod'),
-            'grid'      => __('شبكة بطاقات', 'wparabic-ecomm-cod'),
-            'circles'   => __('دوائر', 'wparabic-ecomm-cod'),
-            'carousel'  => __('شريط متحرك', 'wparabic-ecomm-cod'),
+            'mosaic'   => __('فسيفساء (كبيرة + متوسطتان + عريضة)', 'wparabic-ecomm-cod'),
+            'equal'    => __('بلاطات متساوية', 'wparabic-ecomm-cod'),
+            'grid'     => __('شبكة بطاقات', 'wparabic-ecomm-cod'),
+            'circles'  => __('دوائر', 'wparabic-ecomm-cod'),
+            'carousel' => __('شريط متحرك', 'wparabic-ecomm-cod'),
         );
     }
 
@@ -619,8 +820,6 @@ class WPArabic_Home_Widget_Categories extends WPArabic_Home_Widget {
             'limit'      => 8,
             'columns'    => 4,
             'show_count' => 1,
-            // Blocs selectionnes : motif de rangees + couple categorie/produit par bloc.
-            'rows_pattern' => '3,3,4',
         );
     }
 
@@ -732,56 +931,6 @@ class WPArabic_Home_Widget_Categories extends WPArabic_Home_Widget {
         return is_wp_error($terms) ? array() : $terms;
     }
 
-    /**
-     * Motif de rangees des blocs selectionnes : « 3,3,4 » -> array(3, 3, 4).
-     * Chaque rangee compte 1 a 6 blocs, 24 blocs au total, sinon repli
-     * sur le motif par defaut.
-     *
-     * @param string $pattern
-     * @return int[]
-     */
-    protected function rows_from_pattern($pattern) {
-        $rows = array_values(array_filter(array_map('absint', explode(',', (string) $pattern))));
-
-        foreach ($rows as $n) {
-            if ($n < 1 || $n > 6) {
-                return array(3, 3, 4);
-            }
-        }
-
-        if (!$rows || array_sum($rows) > self::MAX_ITEMS) {
-            return array(3, 3, 4);
-        }
-
-        return $rows;
-    }
-
-    /**
-     * Produits publiés pour les blocs sélectionnés, groupés par première
-     * catégorie : array( term_id => array( id => titre ) ).
-     *
-     * @return array<int, array<int, string>>
-     */
-    protected function product_choices() {
-        $posts = get_posts(array(
-            'post_type'      => 'product',
-            'post_status'    => 'publish',
-            'numberposts'    => 200,
-            'orderby'        => 'title',
-            'order'          => 'ASC',
-            'fields'         => 'ids',
-        ));
-
-        $groups = array();
-        foreach ($posts as $id) {
-            $terms = get_the_terms($id, 'product_cat');
-            $key = (is_array($terms) && $terms) ? (int) $terms[0]->term_id : 0;
-            $groups[$key][$id] = '#' . $id . ' — ' . get_the_title($id);
-        }
-
-        return $groups;
-    }
-
     protected function tile($term, $size) {
         if (!$term) {
             return;
@@ -882,82 +1031,6 @@ class WPArabic_Home_Widget_Categories extends WPArabic_Home_Widget {
         <?php
     }
 
-    /**
-     * Couples categorie + produit complets de la maquette « blocs
-     * selectionnes », a plat (l'ordre du motif est conserve).
-     *
-     * @return array<int, array{cat:int, prod:int}>
-     */
-    protected function selection_slots($i) {
-        $total = array_sum($this->rows_from_pattern($i['rows_pattern'] ?? ''));
-        $slots = array();
-
-        for ($n = 1; $n <= $total; $n++) {
-            $cat_id  = absint($i['sel_cat' . $n] ?? 0);
-            $prod_id = absint($i['sel_prod' . $n] ?? 0);
-            if ($cat_id && $prod_id) {
-                $slots[] = array('cat' => $cat_id, 'prod' => $prod_id);
-            }
-        }
-
-        return $slots;
-    }
-
-    /**
-     * Blocs selectionnes : une rangee par element du motif, chaque bloc
-     * montre la photo du produit choisi, porte le nom de la categorie en
-     * calque et mene a la fiche du produit. Les emplacements incomplets
-     * sont ecartes ; les rangees vides ne sont pas rendues.
-     */
-    protected function render_selection($i) {
-        $rows = $this->rows_from_pattern($i['rows_pattern'] ?? '');
-        ?>
-        <div class="wparabic-cats wparabic-cats--selection">
-            <?php
-            $slot = 0;
-            foreach ($rows as $cols) :
-                $blocks = array();
-                for ($r = 0; $r < $cols; $r++) {
-                    $slot++;
-                    $cat_id  = absint($i['sel_cat' . $slot] ?? 0);
-                    $prod_id = absint($i['sel_prod' . $slot] ?? 0);
-                    if ($cat_id && $prod_id) {
-                        $blocks[] = array('cat' => $cat_id, 'prod' => $prod_id);
-                    }
-                }
-
-                $rendered_blocks = array();
-                foreach ($blocks as $pair) {
-                    $term  = get_term($pair['cat'], 'product_cat');
-                    $image = get_the_post_thumbnail_url($pair['prod'], 'large');
-                    if ($term && !is_wp_error($term) && $image) {
-                        $rendered_blocks[] = array('term' => $term, 'image' => $image, 'prod' => $pair['prod']);
-                    }
-                }
-
-                if (!$rendered_blocks) {
-                    continue;
-                }
-                ?>
-                <ul class="wparabic-cats-track wparabic-cats-row" style="--cols:<?php echo (int) $cols; ?>">
-                    <?php foreach ($rendered_blocks as $b) : ?>
-                        <li class="wparabic-cat">
-                            <a class="wparabic-cat-link" href="<?php echo esc_url(get_permalink($b['prod'])); ?>">
-                                <span class="wparabic-cat-media">
-                                    <img src="<?php echo esc_url($b['image']); ?>" alt="<?php echo esc_attr($b['term']->name); ?>" loading="lazy" decoding="async">
-                                </span>
-                                <span class="wparabic-cat-caption">
-                                    <span class="wparabic-cat-name"><?php echo esc_html($b['term']->name); ?></span>
-                                </span>
-                            </a>
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
-            <?php endforeach; ?>
-        </div>
-        <?php
-    }
-
     public function widget($args, $instance) {
         if ($this->is_disabled($instance)) {
             return; // AVANT before_widget : pas de <section> vide.
@@ -972,10 +1045,6 @@ class WPArabic_Home_Widget_Categories extends WPArabic_Home_Widget {
             if (!array_filter($items)) {
                 return;
             }
-        } elseif ($layout === 'selection') {
-            if (!$this->selection_slots($i)) {
-                return; // Aucun bloc complet : pas de section vide.
-            }
         } else {
             $items = $this->resolve_list($i);
             if (!$items) {
@@ -989,8 +1058,6 @@ class WPArabic_Home_Widget_Categories extends WPArabic_Home_Widget {
 
         if ($layout === 'mosaic') {
             $this->render_mosaic($items);
-        } elseif ($layout === 'selection') {
-            $this->render_selection($i);
         } else {
             $this->render_list($items, $i);
         }
@@ -1023,20 +1090,6 @@ class WPArabic_Home_Widget_Categories extends WPArabic_Home_Widget {
         foreach ($labels as $n => $label) {
             $this->field_select($i, 'cat' . $n, $label, $choices);
         }
-        echo '</div>';
-
-        // --- Blocs selectionnes : motif de rangees + couple categorie/produit.
-        echo '<div class="wparabic-layout-fields" data-layouts="selection">';
-        printf(
-            '<p><label for="%1$s">%2$s</label><input class="widefat" type="text" id="%1$s" name="%3$s" value="%4$s" inputmode="numeric">'
-            . '<span class="description">%5$s</span></p>',
-            esc_attr($this->get_field_id('rows_pattern')),
-            esc_html__('توزيع الصفوف (مثال : 3,3,4)', 'wparabic-ecomm-cod'),
-            esc_attr($this->get_field_name('rows_pattern')),
-            esc_attr(implode(',', $this->rows_from_pattern($i['rows_pattern']))),
-            esc_html__('بعد تغيير التوزيع احفظ النموذج لتحديث قوائم الحظر. الصورة من المنتج المختار، والاسم من التصنيف، والرابط يؤدي إلى صفحة المنتج.', 'wparabic-ecomm-cod')
-        );
-        $this->field_selection_slots($i);
         echo '</div>';
 
         // --- Blocs egaux, grille, cercles, carrousel.
@@ -1078,77 +1131,12 @@ class WPArabic_Home_Widget_Categories extends WPArabic_Home_Widget {
         echo '</div>';
     }
 
-    /**
-     * Blocs selectionnes : un couple de selecteurs (categorie, produit)
-     * par emplacement du motif enregistre.
-     */
-    protected function field_selection_slots($i) {
-        $rows     = $this->rows_from_pattern($i['rows_pattern'] ?? '');
-        $total    = array_sum($rows);
-        $choices  = $this->category_choices();
-        $products = $this->product_choices();
-
-        echo '<p style="margin-bottom:4px"><strong>' . esc_html__('كتل العرض', 'wparabic-ecomm-cod') . '</strong></p>';
-
-        $slot = 0;
-        foreach ($rows as $row_index => $cols) {
-            echo '<p style="margin:10px 0 4px;color:#8c8f94">' . esc_html(sprintf(
-                /* translators: %d: row number */
-                __('الصف %d', 'wparabic-ecomm-cod'),
-                $row_index + 1
-            )) . '</p>';
-
-            for ($r = 0; $r < $cols; $r++) {
-                $slot++;
-                $this->field_select($i, 'sel_cat' . $slot, sprintf(
-                    /* translators: %d: block number */
-                    __('الكتلة %d — التصنيف', 'wparabic-ecomm-cod'),
-                    $slot
-                ), $choices);
-
-                printf(
-                    '<p><label for="%1$s">%2$s</label><select class="widefat" id="%1$s" name="%3$s">',
-                    esc_attr($this->get_field_id('sel_prod' . $slot)),
-                    esc_attr(sprintf(
-                        /* translators: %d: block number */
-                        __('الكتلة %d — المنتج', 'wparabic-ecomm-cod'),
-                        $slot
-                    )),
-                    esc_attr($this->get_field_name('sel_prod' . $slot))
-                );
-                printf(
-                    '<option value="0"%s>%s</option>',
-                    selected(absint($i['sel_prod' . $slot] ?? 0), 0, false),
-                    esc_html__('— اختيار منتج —', 'wparabic-ecomm-cod')
-                );
-                foreach ($products as $term_id => $items) {
-                    $term = $term_id ? get_term($term_id, 'product_cat') : null;
-                    $group_label = ($term && !is_wp_error($term)) ? $term->name : __('بدون تصنيف', 'wparabic-ecomm-cod');
-                    printf('<optgroup label="%s">', esc_attr($group_label));
-                    foreach ($items as $prod_id => $title) {
-                        printf(
-                            '<option value="%1$d"%2$s>%3$s</option>',
-                            (int) $prod_id,
-                            selected(absint($i['sel_prod' . $slot] ?? 0), (int) $prod_id, false),
-                            esc_html($title)
-                        );
-                    }
-                    echo '</optgroup>';
-                }
-                echo '</select></p>';
-            }
-        }
-    }
-
     public function update($new, $old) {
-        $layout = $new['layout'] ?? 'mosaic';
-        $rows   = $this->rows_from_pattern($new['rows_pattern'] ?? '');
-
-        $clean = array(
+        return array(
             'enabled'    => $this->save_enabled($new),
             'title'      => sanitize_text_field($new['title'] ?? ''),
             'subtitle'   => sanitize_text_field($new['subtitle'] ?? ''),
-            'layout'     => array_key_exists($layout, self::layouts()) ? $layout : 'mosaic',
+            'layout'     => array_key_exists($layout = $new['layout'] ?? 'mosaic', self::layouts()) ? $layout : 'mosaic',
             'cat1'       => absint($new['cat1'] ?? 0),
             'cat2'       => absint($new['cat2'] ?? 0),
             'cat3'       => absint($new['cat3'] ?? 0),
@@ -1157,17 +1145,7 @@ class WPArabic_Home_Widget_Categories extends WPArabic_Home_Widget {
             'limit'      => max(1, min(self::MAX_ITEMS, absint($new['limit'] ?? 8))),
             'columns'    => in_array((int) ($new['columns'] ?? 4), array(2, 3, 4, 5, 6), true) ? (int) $new['columns'] : 4,
             'show_count' => !empty($new['show_count']) ? 1 : 0,
-            'rows_pattern' => implode(',', $rows),
         );
-
-        // Blocs selectionnes : seuls les emplacements du motif sont conserves.
-        $total = array_sum($rows);
-        for ($n = 1; $n <= $total; $n++) {
-            $clean['sel_cat' . $n]  = absint($new['sel_cat' . $n] ?? 0);
-            $clean['sel_prod' . $n] = absint($new['sel_prod' . $n] ?? 0);
-        }
-
-        return $clean;
     }
 }
 
@@ -1326,6 +1304,7 @@ add_action('widgets_init', 'wparabic_register_home_widgets');
 function wparabic_register_home_widgets() {
     register_widget('WPArabic_Home_Widget_Hero');
     register_widget('WPArabic_Home_Widget_Products');
+    register_widget('WPArabic_Home_Widget_Products_By_Cat');
     register_widget('WPArabic_Home_Widget_Features');
     register_widget('WPArabic_Home_Widget_Categories');
 }

@@ -33,11 +33,16 @@ Dans l'admin, les sections du thème sont préfixées **« خيارات القا
 | Widget | Rendu sur le site | Réglages principaux |
 |---|---|---|
 | **لافتة ترويجية** — bannière | Grande bannière promo en haut | image de fond, titre, sous-titre, texte + lien du bouton, hauteur (normale/haute) |
-| **قسم التصنيفات** — catégories | Tuiles de catégories de produits | 6 maquettes : mosaïque, blocs égaux (بلاطات متساوية), **blocs choisis (كتل مختارة)**, grille de cartes, cercles, carrousel. Blocs choisis : motif de rangées (ex. 3,3,4) + pour chaque bloc une catégorie et un produit — photo du produit, nom de la catégorie, clic → fiche produit. Blocs égaux et grille : colonnes par rangée (2–6) ; nombre de catégories ; choix des catégories |
+| **قسم التصنيفات** — catégories | Tuiles de catégories de produits | 5 maquettes : mosaïque, blocs égaux (بلاطات متساوية), grille de cartes, cercles, carrousel ; nombre de colonnes par rangée (2–6) pour les blocs égaux et la grille ; nombre de catégories ; choix des catégories |
+| **أقسام حسب التصنيف** — produits par catégorie | Sections empilées : une par catégorie choisie, chacune avec une grille de **cartes produits choisies par l'admin** (photo, prix, promo) | nombre de groupes (1–6), catégorie par groupe, titre personnalisé facultatif (vide = nom de la catégorie), cases à cocher des produits, colonnes 2–6 ; en-tête global facultatif |
 
 Exemple de la maquette blocs égaux (nom et compteur en surimpression sur l'image) :
 
 ![Maquette blocs égaux de la section catégories](docs/homepage-categories-equal.png)
+
+Exemple du widget « أقسام حسب التصنيف » (cartes produits groupées par catégorie) :
+
+![Widget produits par catégorie](docs/homepage-products-by-cat.png)
 | **قسم المنتجات** — produits | Grille de produits | nombre (1–24), colonnes (4/5), tri (date/popularité/aléatoire), filtre par catégorie |
 | **قسم المميزات** — atouts | 4 blocs « icône + titre + texte » | 4 icônes FontAwesome + textes |
 
