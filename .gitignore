@@ -19,6 +19,7 @@ mysql_data/
 
 # Tool session data
 .opencode/
+.zcode/
 
 # OS
 .DS_Store
