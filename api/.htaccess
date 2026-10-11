@@ -1,0 +1,9 @@
+# Deny direct access to backup/config files
+<FilesMatch "\.(sql|db|json|log|env)$">
+  Require all denied
+</FilesMatch>
+
+# PHP handler
+<IfModule mod_rewrite.c>
+  RewriteEngine Off
+</IfModule>

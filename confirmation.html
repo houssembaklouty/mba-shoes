@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تم تأكيد طلبك — MBA Cuir</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet" />
+  <style>
+    :root, [data-theme="dark"] {
+      --red:    #C8102E;
+      --red-dark: #9B0B22;
+      --gold:   #C9A451;
+      --gold-light: #E8C878;
+      --dark:   #0F0D0A;
+      --dark2:  #1C1916;
+      --dark3:  #2A2420;
+      --cream:  #F5EDD6;
+      --cream2: #EDE0C4;
+      --brown:  #8B5E3C;
+
+      --t-80: rgba(245,237,214,0.80);
+      --t-75: rgba(245,237,214,0.75);
+      --t-70: rgba(245,237,214,0.70);
+      --t-65: rgba(245,237,214,0.65);
+      --t-60: rgba(245,237,214,0.60);
+      --t-50: rgba(245,237,214,0.50);
+      --t-40: rgba(245,237,214,0.40);
+    }
+
+    [data-theme="light"] {
+      --red:    #C8102E;
+      --red-dark: #9B0B22;
+      --gold:   #B8922E;
+      --gold-light: #D4A843;
+      --dark:   #FFFFFF;
+      --dark2:  #F5F0E8;
+      --dark3:  #EDE8DE;
+      --cream:  #1A1814;
+      --cream2: #D5CFC4;
+      --brown:  #8B5E3C;
+
+      --t-80: rgba(26,24,20,0.80);
+      --t-75: rgba(26,24,20,0.75);
+      --t-70: rgba(26,24,20,0.70);
+      --t-65: rgba(26,24,20,0.65);
+      --t-60: rgba(26,24,20,0.60);
+      --t-50: rgba(26,24,20,0.50);
+      --t-40: rgba(26,24,20,0.40);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: var(--dark);
+      color: var(--cream);
+      direction: rtl;
+      overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--dark2); }
+    ::-webkit-scrollbar-thumb { background: var(--red); border-radius: 3px; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.92); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    .animate-fade-up { animation: fadeUp 0.7s ease both; }
+    .animate-scale-in { animation: scaleIn 0.6s ease 0.2s both; }
+
+    [data-theme="light"] .text-white { color: var(--cream) !important; }
+    [data-theme="light"] .hover\:text-white:hover { color: var(--gold) !important; }
+  </style>
+</head>
+<body>
+
+<div class="min-h-screen flex items-center justify-center px-4 py-12" style="background:var(--dark)">
+  <div class="w-full max-w-lg">
+
+    <!-- Success icon -->
+    <div class="text-center mb-8 animate-scale-in">
+      <div class="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-4" style="background:linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%); box-shadow: 0 8px 30px rgba(200,16,46,0.4)">
+        <span class="text-4xl">✓</span>
+      </div>
+      <h1 class="font-black text-2xl mb-2" style="color:var(--gold)">شكرا علي ثيقتك!!</h1>
+      <p style="color:var(--t-70)">استقبلنا طلبك — فريقنا يتصل بيك قريبًا لتأكيد الطلب والتوصيل</p>
+      <div id="orderIdBadge" class="mt-3 hidden">
+        <span class="inline-block px-4 py-1 rounded-full text-sm font-black" style="background:var(--dark3); color:var(--gold); border:1px solid rgba(201,164,81,0.3)">رقم الطلب: #<span id="orderIdText"></span></span>
+      </div>
+      <p style="color:var(--t-70)"> نفكروك : أنه يمكن تغيير المقاس "pointure" كان مجاش قدك </p>
+    </div>
+
+    <!-- Order summary -->
+    <div id="orderSummary" class="rounded-2xl p-6 mb-6 animate-fade-up" style="background:var(--dark2); border:1px solid rgba(201,164,81,0.2)">
+      <!-- Populated by JS -->
+    </div>
+
+    <!-- No order fallback (hidden by default) -->
+    <div id="noOrder" class="hidden text-center py-10">
+      <div class="text-5xl mb-4">📭</div>
+      <h2 class="font-black text-xl mb-3" style="color:var(--gold)">ما فماش طلب</h2>
+      <p class="mb-6" style="color:var(--t-65)">رجع للصفحة الرئيسية وعبي الفورمة باش تطلب</p>
+      <a href="mba-landing-page.html" class="inline-block py-3 px-8 rounded-lg font-black text-sm" style="background:linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%); color:white; text-decoration:none; box-shadow:0 4px 20px rgba(200,16,46,0.4)">العودة للرئيسية</a>
+    </div>
+
+    <!-- Back button -->
+    <div class="text-center animate-fade-up">
+      <a id="backBtn" href="mba-landing-page.html" class="inline-block py-3 px-8 rounded-lg font-bold text-sm transition-all" style="background:var(--dark3); color:var(--gold); border:1px solid rgba(201,164,81,0.3); text-decoration:none">
+        ⬅ العودة للرئيسية
+      </a>
+    </div>
+
+    <!-- Theme toggle -->
+    <div class="text-center mt-6">
+      <button onclick="toggleTheme()" class="w-10 h-10 rounded-full flex items-center justify-center text-lg transition-colors mx-auto" style="background:var(--dark3); color:var(--gold); border:1px solid rgba(201,164,81,0.3)" aria-label="تغيير المظهر" id="themeToggle">🌙</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // ── THEME ──
+  (function() {
+    const saved = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', saved);
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('themeToggle').textContent = saved === 'light' ? '☀️' : '🌙';
+    });
+  })();
+
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    document.getElementById('themeToggle').textContent = next === 'light' ? '☀️' : '🌙';
+  }
+
+  // ── ORDER DETAILS ──
+  function arabicNum(n) {
+    const nums = ['', 'الأول', 'الثاني', 'الثالث'];
+    return nums[n] || n;
+  }
+
+  const raw = localStorage.getItem('orderData');
+  const orderId = localStorage.getItem('orderId');
+
+  if (orderId) {
+    document.getElementById('orderIdBadge').classList.remove('hidden');
+    document.getElementById('orderIdText').textContent = orderId;
+    localStorage.removeItem('orderId');
+  }
+
+  if (raw) {
+    const order = JSON.parse(raw);
+    const deliveryCost = order.delivery ? 0 : 7;
+    const totalNum = parseFloat(order.price) + deliveryCost;
+    const totalStr = totalNum.toFixed(2).replace('.', ',');
+    const deliveryText = order.delivery ? '🚚 مجاني!' : '+7,00 د.ت';
+
+    let pairsHTML = '';
+    order.pairs.forEach((p, i) => {
+      const label = order.qty > 1
+        ? `<div class="text-xs font-bold mb-2 flex items-center gap-2">
+            <span class="w-5 h-5 rounded-full flex items-center justify-center text-xs font-black" style="background:var(--red); color:white">${i + 1}</span>
+            <span style="color:var(--t-70)">الزوج ${arabicNum(i + 1)}</span>
+           </div>`
+        : '<div class="text-xs font-bold mb-2" style="color:var(--gold)">اللون والقياس</div>';
+
+      pairsHTML += `
+        <div class="rounded-xl p-3 mb-3" style="background:var(--dark3); border:1px solid rgba(201,164,81,0.1)">
+          ${label}
+          <div class="flex justify-between text-sm">
+            <span style="color:var(--t-60)">اللون:</span>
+            <span class="font-bold" style="color:var(--cream)">${p.color === 'أسود' ? '⬤ أسود' : '⬤ مرون'}</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span style="color:var(--t-60)">القياس:</span>
+            <span class="font-bold" style="color:var(--cream)">${p.size}</span>
+          </div>
+        </div>`;
+    });
+
+    document.getElementById('orderSummary').innerHTML = `
+      <div class="text-xs font-bold mb-4" style="color:var(--gold)">ملخص الطلب</div>
+
+      <div class="flex justify-between text-sm mb-2">
+        <span style="color:var(--t-60)">الاسم:</span>
+        <span class="font-bold" style="color:var(--cream)">${order.name}</span>
+      </div>
+      <div class="flex justify-between text-sm mb-2">
+        <span style="color:var(--t-60)">الهاتف:</span>
+        <span class="font-bold" style="color:var(--cream)">${order.phone}</span>
+      </div>
+      <div class="flex justify-between text-sm mb-4">
+        <span style="color:var(--t-60)">العنوان:</span>
+        <span class="font-bold text-left" style="color:var(--cream); max-width:220px">${order.address}</span>
+      </div>
+
+      <div class="my-4" style="height:1px; background:linear-gradient(to left, transparent, var(--gold), transparent); opacity:0.3"></div>
+
+      <div class="flex justify-between text-sm mb-2">
+        <span style="color:var(--t-60)">الكمية:</span>
+        <span class="font-bold" style="color:var(--cream)">${order.qty} زوج</span>
+      </div>
+
+      ${pairsHTML}
+
+      <div class="my-4" style="height:1px; background:linear-gradient(to left, transparent, var(--gold), transparent); opacity:0.3"></div>
+
+      <div class="flex justify-between text-sm mb-1">
+        <span style="color:var(--t-60)">سعر المنتج:</span>
+        <span class="font-bold" style="color:var(--cream)">${String(order.price).replace('.', ',')} د.ت</span>
+      </div>
+      <div class="flex justify-between text-sm mb-1">
+        <span style="color:var(--t-60)">التوصيل:</span>
+        <span class="font-bold" style="color:var(--gold)">${deliveryText}</span>
+      </div>
+      <div class="flex justify-between font-black text-lg mt-3">
+        <span style="color:var(--gold)">المجموع:</span>
+        <span style="color:var(--red)">${totalStr} د.ت</span>
+      </div>
+
+      <div class="text-center mt-4">
+        <span class="text-xs" style="color:var(--t-40)">🔒 الدفع عند الاستلام</span>
+      </div>
+    `;
+
+    // Clean up after display
+    localStorage.removeItem('orderData');
+  } else {
+    document.getElementById('orderSummary').classList.add('hidden');
+    document.getElementById('noOrder').classList.remove('hidden');
+    document.getElementById('backBtn').classList.add('hidden');
+  }
+</script>
+
+</body>
+</html>

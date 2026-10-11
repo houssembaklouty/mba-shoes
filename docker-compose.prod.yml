@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mba-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  wordpress:
+    build: ./docker/wordpress
+    container_name: mba-wordpress
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_DB_USER: ${MYSQL_USER}
+      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
+      WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
+      WORDPRESS_TABLE_PREFIX: wp_
+    volumes:
+      # Seul wp-content est monte : la boutique est entierement dans
+      # WordPress (theme wparabic-ecomm-cod). L'ancienne landing page et son
+      # relais api/ ne sont plus deployes (un index.html a la racine
+      # masquait la page d'accueil WordPress).
+      - ./wp-content:/var/www/html/wp-content
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+volumes:
+  mysql_data:

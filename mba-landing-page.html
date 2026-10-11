@@ -1,0 +1,1629 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MBA Cuir – موكاسان جلد </title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet" />
+  <style>
+    :root, [data-theme="dark"] {
+      --red:    #C8102E;
+      --red-dark: #9B0B22;
+      --gold:   #C9A451;
+      --gold-light: #E8C878;
+      --dark:   #0F0D0A;
+      --dark2:  #1C1916;
+      --dark3:  #2A2420;
+      --cream:  #F5EDD6;
+      --cream2: #EDE0C4;
+      --brown:  #8B5E3C;
+
+      /* text opacities */
+      --t-80: rgba(245,237,214,0.80);
+      --t-75: rgba(245,237,214,0.75);
+      --t-70: rgba(245,237,214,0.70);
+      --t-65: rgba(245,237,214,0.65);
+      --t-60: rgba(245,237,214,0.60);
+      --t-50: rgba(245,237,214,0.50);
+      --t-45: rgba(245,237,214,0.45);
+      --t-40: rgba(245,237,214,0.40);
+      --t-35: rgba(245,237,214,0.35);
+      --t-30: rgba(245,237,214,0.30);
+    }
+
+    [data-theme="light"] {
+      --red:    #C8102E;
+      --red-dark: #9B0B22;
+      --gold:   #B8922E;
+      --gold-light: #D4A843;
+      --dark:   #FFFFFF;
+      --dark2:  #F5F0E8;
+      --dark3:  #EDE8DE;
+      --cream:  #1A1814;
+      --cream2: #D5CFC4;
+      --brown:  #8B5E3C;
+
+      --t-80: rgba(26,24,20,0.80);
+      --t-75: rgba(26,24,20,0.75);
+      --t-70: rgba(26,24,20,0.70);
+      --t-65: rgba(26,24,20,0.65);
+      --t-60: rgba(26,24,20,0.60);
+      --t-50: rgba(26,24,20,0.50);
+      --t-45: rgba(26,24,20,0.45);
+      --t-40: rgba(26,24,20,0.40);
+      --t-35: rgba(26,24,20,0.35);
+      --t-30: rgba(26,24,20,0.30);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; scroll-padding-top: 100px; }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: var(--dark);
+      color: var(--cream);
+      direction: rtl;
+      overflow-x: hidden;
+    }
+
+    /* ─── NOISE TEXTURE OVERLAY ─── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.4;
+    }
+
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--dark2); }
+    ::-webkit-scrollbar-thumb { background: var(--red); border-radius: 3px; }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.92); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    @keyframes pulse-ring {
+      0%   { box-shadow: 0 0 0 0 rgba(200,16,46,0.6); }
+      70%  { box-shadow: 0 0 0 18px rgba(200,16,46,0); }
+      100% { box-shadow: 0 0 0 0 rgba(200,16,46,0); }
+    }
+    @keyframes goldShimmer {
+      0%   { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-10px); }
+    }
+    @keyframes countdown {
+      from { width: 100%; }
+      to   { width: 0%; }
+    }
+
+    .animate-fade-up   { animation: fadeUp 0.8s ease both; }
+    .animate-fade-up-2 { animation: fadeUp 0.8s ease 0.2s both; }
+    .animate-fade-up-3 { animation: fadeUp 0.8s ease 0.4s both; }
+    .animate-fade-up-4 { animation: fadeUp 0.8s ease 0.6s both; }
+    .animate-scale-in  { animation: scaleIn 0.9s ease 0.3s both; }
+    .animate-float     { animation: float 4s ease-in-out infinite; }
+
+    /* ─── GOLD SHIMMER TEXT ─── */
+    .text-gold-shimmer {
+      background: linear-gradient(90deg, var(--gold) 0%, var(--gold-light) 40%, var(--gold) 60%, var(--gold-light) 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: goldShimmer 3s linear infinite;
+    }
+
+    /* ─── GRADIENT DIVIDER ─── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(to left, transparent, var(--gold), transparent);
+      opacity: 0.3;
+    }
+
+    /* ─── SECTION LABEL ─── */
+    .section-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--red);
+      font-weight: 700;
+    }
+
+    /* ─── HERO ─── */
+    .hero-bg {
+      background: radial-gradient(ellipse at 60% 50%, #2A1A10 0%, var(--dark) 70%);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C9A451' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    /* ─── PRICE BADGE ─── */
+    .price-badge {
+      background: var(--red);
+      clip-path: polygon(0 0, 100% 0, 95% 50%, 100% 100%, 0 100%, 5% 50%);
+      padding: 0.5rem 2rem;
+      display: inline-block;
+    }
+
+    /* ─── PRODUCT CARD ─── */
+    .product-card {
+      background: var(--dark2);
+      border: 1px solid rgba(201,164,81,0.15);
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .product-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(201,164,81,0.05) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.4s;
+      pointer-events: none;
+    }
+    .product-card:hover::before { opacity: 1; }
+    .product-card:hover {
+      border-color: rgba(201,164,81,0.4);
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(201,164,81,0.2);
+    }
+
+    /* ─── FEATURE CARD ─── */
+    .feature-card {
+      background: linear-gradient(135deg, var(--dark2) 0%, var(--dark3) 100%);
+      border: 1px solid rgba(201,164,81,0.1);
+      transition: all 0.3s ease;
+    }
+    .feature-card:hover {
+      border-color: var(--red);
+      transform: translateY(-4px);
+      box-shadow: 0 10px 30px rgba(200,16,46,0.15);
+    }
+
+    /* ─── CTA BUTTON PRIMARY ─── */
+    .btn-primary {
+      background: linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%);
+      color: white;
+      font-weight: 700;
+      font-size: 1.1rem;
+      padding: 1rem 2.5rem;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(200,16,46,0.4);
+      border: none;
+      cursor: pointer;
+      display: inline-block;
+      text-decoration: none;
+      animation: pulse-ring 2s ease-out infinite;
+    }
+    .btn-primary:hover {
+      transform: scale(1.05) translateY(-2px);
+      box-shadow: 0 8px 30px rgba(200,16,46,0.6);
+    }
+
+    /* ─── CTA BUTTON GOLD ─── */
+    .btn-gold {
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 50%, var(--gold) 100%);
+      color: var(--dark);
+      font-weight: 900;
+      font-size: 1.2rem;
+      padding: 1.1rem 3rem;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(201,164,81,0.4);
+      border: none;
+      cursor: pointer;
+      display: inline-block;
+    }
+    .btn-gold:hover {
+      transform: scale(1.05) translateY(-2px);
+      box-shadow: 0 8px 30px rgba(201,164,81,0.6);
+    }
+
+    /* ─── TESTIMONIAL CARD ─── */
+    .testimonial-card {
+      background: var(--dark2);
+      border-right: 3px solid var(--red);
+      transition: all 0.3s ease;
+    }
+    .testimonial-card:hover {
+      background: var(--dark3);
+      transform: translateX(-4px);
+    }
+
+    /* ─── SIZE SELECTOR ─── */
+    .size-btn {
+      border: 2px solid rgba(201,164,81,0.3);
+      background: transparent;
+      color: var(--cream);
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Cairo', sans-serif;
+      font-size: 1rem;
+    }
+    .size-btn:hover, .size-btn.active {
+      border-color: var(--red);
+      background: var(--red);
+      color: white;
+    }
+
+    /* ─── COLOR SELECTOR ─── */
+    .color-btn {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .color-btn.active, .color-btn:hover {
+      border-color: var(--gold);
+      transform: scale(1.15);
+    }
+
+    /* ─── FORM INPUTS ─── */
+    .form-input {
+      background: var(--dark3);
+      border: 1px solid rgba(201,164,81,0.2);
+      color: var(--cream);
+      border-radius: 6px;
+      padding: 0.9rem 1.2rem;
+      width: 100%;
+      font-family: 'Cairo', sans-serif;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+      outline: none;
+    }
+    .form-input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(201,164,81,0.1);
+    }
+    .form-input::placeholder { color: var(--t-40); }
+    .form-input option { background: var(--dark2); color: var(--cream); }
+
+    /* ─── STICKY NAV ─── */
+    nav {
+      backdrop-filter: blur(20px);
+      background: rgba(15,13,10,0.9);
+      border-bottom: 1px solid rgba(201,164,81,0.15);
+    }
+
+    /* ─── PROGRESS BAR ─── */
+    .progress-bar {
+      height: 4px;
+      background: var(--red);
+      animation: countdown 120s linear forwards;
+    }
+
+    /* ─── STEP CIRCLE ─── */
+    .step-circle {
+      width: 64px; height: 64px;
+      background: linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; font-weight: 900;
+      color: white;
+      box-shadow: 0 4px 20px rgba(200,16,46,0.4);
+      flex-shrink: 0;
+    }
+
+    /* ─── PRICING CARD ─── */
+    .pricing-card {
+      background: var(--dark2);
+      border: 1px solid rgba(201,164,81,0.15);
+      border-radius: 12px;
+      transition: all 0.4s ease;
+    }
+    .pricing-card.featured {
+      background: linear-gradient(135deg, #2A1A10 0%, var(--dark2) 100%);
+      border-color: var(--gold);
+      box-shadow: 0 0 40px rgba(201,164,81,0.15), 0 20px 60px rgba(0,0,0,0.4);
+      transform: scale(1.04);
+    }
+
+    /* ─── FAQ ACCORDION ─── */
+    .faq-item {
+      border-bottom: 1px solid rgba(201,164,81,0.1);
+      overflow: hidden;
+    }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.3s ease;
+    }
+    .faq-item.open .faq-answer { max-height: 300px; }
+    .faq-arrow {
+      transition: transform 0.3s ease;
+    }
+    .faq-item.open .faq-arrow { transform: rotate(180deg); }
+
+    /* ─── GUARANTEE BADGE ─── */
+    .guarantee-badge {
+      border: 3px solid var(--gold);
+      border-radius: 50%;
+      width: 140px; height: 140px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: radial-gradient(circle, var(--dark3) 0%, var(--dark2) 100%);
+      box-shadow: 0 0 30px rgba(201,164,81,0.2), inset 0 0 20px rgba(201,164,81,0.05);
+      flex-shrink: 0;
+    }
+
+    /* ─── URGENCY BAR ─── */
+    .urgency-bar {
+      background: linear-gradient(135deg, var(--red-dark) 0%, var(--red) 50%, var(--red-dark) 100%);
+      background-size: 200% 100%;
+      animation: goldShimmer 3s linear infinite;
+    }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Image placeholder */
+    .img-placeholder {
+      background: linear-gradient(135deg, var(--dark3), var(--dark2));
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(201,164,81,0.4);
+      font-size: 0.85rem;
+      text-align: center;
+      border: 1px dashed rgba(201,164,81,0.2);
+      border-radius: 8px;
+    }
+
+    /* ─── LIGHT THEME OVERRIDES ─── */
+    [data-theme="light"] .text-white { color: var(--cream) !important; }
+    [data-theme="light"] .hover\:text-white:hover { color: var(--gold) !important; }
+    [data-theme="light"] .text-yellow-300 { color: #B8860B !important; }
+    [data-theme="light"] .text-yellow-400 { color: #DAA520 !important; }
+
+    [data-theme="light"] .hero-bg {
+      background: radial-gradient(ellipse at 60% 50%, #F0E8D8 0%, var(--dark) 70%) !important;
+    }
+
+    [data-theme="light"] body::before { opacity: 0.12; }
+
+    [data-theme="light"] .form-input option { background: var(--dark2); color: var(--cream); }
+
+    [data-theme="light"] .img-placeholder {
+      color: rgba(201,164,81,0.5);
+    }
+
+    [data-theme="light"] nav {
+      background: rgba(255,255,255,0.9);
+      border-bottom: 1px solid rgba(201,164,81,0.15);
+    }
+
+    [data-theme="light"] .btn-gold {
+      color: #0F0D0A !important;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════
+     URGENCY TOP BAR
+══════════════════════════════════════════════════════ -->
+<div class="urgency-bar py-2 text-center text-sm font-bold text-white tracking-wide">
+  ⚡ عرض محدود — باقي <span id="timer" class="text-yellow-300">14:59</span> بش تنتهي بـ 49 دينار فقط! 🔥
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     NAVIGATION
+══════════════════════════════════════════════════════ -->
+<nav class="fixed top-[36px] left-0 right-0 z-50 py-4 px-6">
+  <div class="max-w-6xl mx-auto flex items-center justify-between">
+    <!-- Logo -->
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-full border-2 flex items-center justify-center" style="border-color:var(--gold)">
+        <span class="font-black text-sm" style="color:var(--gold)">MBA</span>
+      </div>
+      <div>
+        <div class="font-black text-lg leading-none" style="color:var(--cream)">MBA</div>
+        <div class="text-xs tracking-widest uppercase" style="color:var(--gold); font-size:0.6rem">Cuir</div>
+      </div>
+    </div>
+
+    <!-- Nav Links (hidden on mobile) -->
+    <div class="hidden md:flex items-center gap-8 text-sm font-semibold" style="color:var(--t-70)">
+      <a href="#product" class="hover:text-white transition-colors">المنتج</a>
+      <a href="#features" class="hover:text-white transition-colors">المميزات</a>
+      <a href="#testimonials" class="hover:text-white transition-colors">آراء العملاء</a>
+      <a href="#faq" class="hover:text-white transition-colors">الأسئلة</a>
+    </div>
+
+    <!-- CTA Nav -->
+    <div class="flex items-center gap-3">
+      <button onclick="toggleTheme()" class="w-9 h-9 rounded-full flex items-center justify-center text-lg transition-colors" style="background:var(--dark3); color:var(--gold); border:1px solid rgba(201,164,81,0.3)" aria-label="تغيير المظهر" id="themeToggle">🌙</button>
+      <a href="#order" class="btn-primary text-sm py-2 px-5 rounded">إطلب الآن</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════
+     HERO SECTION
+══════════════════════════════════════════════════════ -->
+<section class="hero-bg min-h-screen flex items-center pt-32 pb-16 px-6 relative">
+  <!-- Decorative circle -->
+  <div class="absolute top-20 left-10 w-64 h-64 rounded-full opacity-5 blur-3xl" style="background:var(--red)"></div>
+  <div class="absolute bottom-20 right-10 w-96 h-96 rounded-full opacity-5 blur-3xl" style="background:var(--brown)"></div>
+
+  <div class="max-w-6xl mx-auto w-full">
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+
+      <!-- Text Content -->
+      <div class="order-2 md:order-1">
+        <div class="section-label mb-4 animate-fade-up">✦ جديد بالسوق التونسية</div>
+
+        <h1 class="font-black leading-tight mb-6 animate-fade-up-2" style="font-size:clamp(2rem,5vw,3.5rem)">
+          إلبس <span class="text-gold-shimmer">ستايل أنيق</span><br/>
+         باش تحس <span style="color:var(--red)">بالراحة</span><br/>
+          طول اليوم
+        </h1>
+
+        <p class="text-lg mb-8 animate-fade-up-3" style="color:var(--t-75); line-height:1.9">
+          موكاسان MBA من <strong style="color:var(--gold)">الجلد</strong>، بنعل TR (Semelle) مخيط يدويًا — مناسب للشغل، الخرجة، وكل مناسبة.
+        </p>
+
+        <!-- Trust Badges -->
+        <div class="flex flex-wrap gap-4 mb-8 animate-fade-up-3">
+          <div class="flex items-center gap-2 text-sm" style="color:var(--gold)">
+            <span>✓</span> <span>جلد  100%</span>
+          </div>
+          <div class="flex items-center gap-2 text-sm" style="color:var(--gold)">
+            <span>✓</span> <span>نعل TR مخيط</span>
+          </div>
+          <div class="flex items-center gap-2 text-sm" style="color:var(--gold)">
+            <span>✓</span> <span>ضمان جودة ممتازة</span>
+          </div>
+          <div class="flex items-center gap-2 text-sm" style="color:var(--gold)">
+            <span>✓</span> <span>توصيل لكامل تونس</span>
+          </div>
+        </div>
+
+        <!-- Price -->
+        <div class="flex items-center gap-5 mb-8 animate-fade-up-4">
+          <div>
+            <div class="text-sm line-through mb-1" style="color:var(--t-40)">السعر العادي: 79,00 DT</div>
+            <div class="flex items-baseline gap-2">
+              <span class="font-black" style="font-size:3rem; color:var(--red); line-height:1">49</span>
+              <span class="font-black text-2xl" style="color:var(--red)">,00 DT</span>
+            </div>
+            <div class="text-xs mt-1 font-bold" style="color:var(--gold)">⬇ وفّر 30 دينار — عرض محدود!</div>
+          </div>
+          <div class="flex flex-col gap-2 text-center p-4 rounded-lg border" style="border-color:rgba(200,16,46,0.4); background:rgba(200,16,46,0.08)">
+            <span class="text-xs font-bold" style="color:var(--red)">الألوان المتاحة</span>
+            <div class="flex gap-2 justify-center">
+              <button class="color-btn" style="background:#1a1a1a; border-color:var(--gold);" title="أسود" id="colorBlack" onclick="selectColor('black')"></button>
+              <button class="color-btn" style="background:#8B5E3C;" title="مرون" id="colorBrown" onclick="selectColor('brown')"></button>
+            </div>
+            <span class="text-xs" style="color:var(--t-50)">أسود | مرون</span>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4 animate-fade-up-4">
+          <a href="#order" class="btn-primary text-center text-lg py-4 px-8 rounded-lg">
+            🛒 إطلب الآن
+          </a>
+        </div>
+
+        <!-- Small social proof -->
+        <div class="mt-6 flex items-center gap-3 animate-fade-up-4">
+          <div class="flex -space-x-2 -space-x-reverse">
+            <div class="w-8 h-8 rounded-full border-2 flex items-center justify-center text-xs font-bold" style="background:var(--brown); border-color:var(--dark); color:white">م</div>
+            <div class="w-8 h-8 rounded-full border-2 flex items-center justify-center text-xs font-bold" style="background:#5C3D2E; border-color:var(--dark); color:white">ع</div>
+            <div class="w-8 h-8 rounded-full border-2 flex items-center justify-center text-xs font-bold" style="background:var(--red-dark); border-color:var(--dark); color:white">ك</div>
+          </div>
+          <p class="text-sm" style="color:var(--t-65)">+500 عميل سعيد بالمنتاج هذا 🌟</p>
+        </div>
+      </div>
+
+      <!-- Product Image -->
+      <div class="order-1 md:order-2 flex justify-center animate-scale-in">
+        <div class="relative">
+          <!-- Glow effect behind image -->
+          <div class="absolute inset-0 rounded-2xl blur-3xl opacity-20" style="background:var(--brown); transform:scale(0.8) translateY(10%)"></div>
+
+          <!-- Slider wrapper -->
+          <div class="relative rounded-2xl overflow-hidden animate-float shadow-2xl group" style="max-width:420px; border:1px solid rgba(201,164,81,0.2)">
+            <img
+              id="heroImgBrown"
+              src="./mocassin-marron.png"
+              alt="موكاسان MBA جلد  مرون"
+              class="w-full object-cover"
+              style="display:block; transition: opacity 0.5s ease;"
+            />
+            <img
+              id="heroImgBlack"
+              src="./mocassin-noir.png"
+              alt="موكاسان MBA جلد  أسود"
+              class="w-full object-cover"
+              style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition: opacity 0.5s ease;"
+            />
+
+            <!-- Prev/Next arrows (visible on hover via group) -->
+            <button onclick="heroPrev()" class="absolute top-1/2 right-3 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity z-10" style="background:rgba(200,16,46,0.8)" aria-label="السابق">❮</button>
+            <button onclick="heroNext()" class="absolute top-1/2 left-3 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity z-10" style="background:rgba(200,16,46,0.8)" aria-label="التالي">❯</button>
+
+            <!-- Badge overlay -->
+            <div class="absolute top-4 right-4 bg-red-700 text-white text-xs font-black px-3 py-1 rounded-full shadow-lg z-10" style="background:var(--red)">
+              جودة ممتازة ✓
+            </div>
+          </div>
+
+          <!-- Dots -->
+          <div class="flex justify-center gap-3 mt-4" id="heroDots">
+            <button onclick="heroGoTo(0)" class="hero-dot w-3 h-3 rounded-full transition-all" style="background:var(--red); box-shadow:0 0 8px rgba(200,16,46,0.5)"></button>
+            <button onclick="heroGoTo(1)" class="hero-dot w-3 h-3 rounded-full transition-all" style="background:var(--dark3); box-shadow:none"></button>
+          </div>
+
+          <!-- Small tag -->
+          <div class="absolute -bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap text-center py-2 px-6 rounded-full font-bold text-sm shadow-lg" style="background:var(--dark2); border:1px solid rgba(201,164,81,0.3); color:var(--gold)">
+            ✦ Cuir — جلد
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     PROBLEM SECTION
+══════════════════════════════════════════════════════ -->
+<section class="py-20 px-6 reveal" style="background:var(--dark2)">
+  <div class="max-w-5xl mx-auto text-center">
+    <div class="section-label mb-4">المشكلة اللي تعرفها كويس</div>
+    <h2 class="font-black mb-12" style="font-size:clamp(1.6rem,4vw,2.8rem)">
+      تعبت من الحذاء اللي
+      <span style="color:var(--red)">يؤلم</span> ولا يدوم؟
+    </h2>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <!-- Pain point 1 -->
+      <div class="feature-card p-6 rounded-xl text-center">
+        <div class="text-4xl mb-4">😫</div>
+        <h3 class="font-bold text-lg mb-3" style="color:var(--red)">راحة القدم</h3>
+        <p style="color:var(--t-65); line-height:1.8">جلد يضغط على رجليك ويخليك تحس بالتعب من أول ساعة</p>
+      </div>
+      <!-- Pain point 2 -->
+      <div class="feature-card p-6 rounded-xl text-center">
+        <div class="text-4xl mb-4">💸</div>
+        <h3 class="font-bold text-lg mb-3" style="color:var(--red)">الجودة الغالية</h3>
+        <p style="color:var(--t-65); line-height:1.8">تدفع غالي وبعد 3 أشهر يتقشر الجلد </p>
+      </div>
+      <!-- Pain point 3 -->
+      <div class="feature-card p-6 rounded-xl text-center">
+        <div class="text-4xl mb-4">👎</div>
+        <h3 class="font-bold text-lg mb-3" style="color:var(--red)">الستايل والعملية</h3>
+        <p style="color:var(--t-65); line-height:1.8">إما يكون كلاسيكي لاكن موش مريح، ولا مريح لاكن ما عندوش ستايل أنيق</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     PRODUCT SHOWCASE
+══════════════════════════════════════════════════════ -->
+<section id="product" class="py-20 px-6 reveal" style="background:var(--dark)">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-14">
+      <div class="section-label mb-4">الحل الكامل</div>
+      <h2 class="font-black" style="font-size:clamp(1.6rem,4vw,2.8rem)">
+        موكاسان MBA — <span class="text-gold-shimmer">صورة حقيقية للمنتوج (للمصداقية)</span>
+      </h2>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8">
+      <!-- Black variant -->
+      <div class="product-card rounded-2xl overflow-hidden">
+        <div class="relative overflow-hidden" style="background:#1a1a1a; height: 40rem;">
+          <img
+            src="./mocassin-noir.png"
+            alt="موكاسان MBA جلد  أسود"
+            class="w-full h-full object-contain object-center transition-transform duration-700 hover:scale-105"
+          />
+          <div class="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-bold" style="background:rgba(0,0,0,0.7); color:var(--gold); border:1px solid rgba(201,164,81,0.3)">
+            ⬤ اللون الأسود
+          </div>
+        </div>
+        <div class="p-6">
+          <h3 class="font-black text-xl mb-2">موكاسان "Mocassin" — أسود</h3>
+          <p class="text-sm mb-4" style="color:var(--t-60)">مناسب للعمل، الحفلات، والمناسبات الرسمية</p>
+          <div class="flex items-center justify-between">
+            <div>
+              <span class="text-sm line-through" style="color:var(--t-30)">79 DT</span>
+              <span class="font-black text-2xl mr-2" style="color:var(--red)">49,00 DT</span>
+            </div>
+            <a href="#order" class="btn-primary py-2 px-5 rounded-lg text-sm">إطلب الآن</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Brown variant -->
+      <div class="product-card rounded-2xl overflow-hidden">
+        <div class="relative overflow-hidden" style="background:#2A1A10; height: 40rem;">
+          <img
+            src="./mocassin-marron.png"
+            alt="موكاسان MBA جلد  مرون"
+            class="w-full h-full object-contain object-center transition-transform duration-700 hover:scale-105"
+          />
+          <div class="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-bold" style="background:rgba(0,0,0,0.7); color:var(--gold); border:1px solid rgba(201,164,81,0.3)">
+            ⬤ اللون المرون
+          </div>
+        </div>
+        <div class="p-6">
+          <h3 class="font-black text-xl mb-2">موكاسان "Mocassin" — مرون</h3>
+          <p class="text-sm mb-4" style="color:var(--t-60)">أناقة كاجوال مريح للخرجات والعمل اليومي</p>
+          <div class="flex items-center justify-between">
+            <div>
+              <span class="text-sm line-through" style="color:var(--t-30)">79 DT</span>
+              <span class="font-black text-2xl mr-2" style="color:var(--red)">49,00 DT</span>
+            </div>
+            <a href="#order" class="btn-primary py-2 px-5 rounded-lg text-sm">إطلب الآن</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     FEATURES & BENEFITS
+══════════════════════════════════════════════════════ -->
+<section id="features" class="py-20 px-6 reveal" style="background:var(--dark2)">
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-14">
+      <div class="section-label mb-4">ليش MBA مختلف؟</div>
+      <h2 class="font-black" style="font-size:clamp(1.6rem,4vw,2.8rem)">
+        مميزات ما تلقاهاش عند غيرنا
+      </h2>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+      <div class="feature-card p-6 rounded-xl">
+        <div class="text-3xl mb-4">🐄</div>
+        <h3 class="font-bold text-lg mb-2" style="color:var(--gold)">جلد  100%</h3>
+        <p class="text-sm leading-relaxed" style="color:var(--t-65)">جلد حقيقي يتنفس مع قدمك، يطول في الاستعمال ويتحسن مع الوقت</p>
+      </div>
+
+      <div class="feature-card p-6 rounded-xl">
+        <div class="text-3xl mb-4">🧵</div>
+        <h3 class="font-bold text-lg mb-2" style="color:var(--gold)">نعل TR مخيط يدويًا</h3>
+        <p class="text-sm leading-relaxed" style="color:var(--t-65)">النعل مخيط وموش لاصق فقط — يعطيك ثبات وديمومة أكثر بكثير من الطرق الاعتيادية</p>
+      </div>
+
+      <div class="feature-card p-6 rounded-xl">
+        <div class="text-3xl mb-4">☁️</div>
+        <h3 class="font-bold text-lg mb-2" style="color:var(--gold)">نعل مريح للقدم</h3>
+        <p class="text-sm leading-relaxed" style="color:var(--t-65)">تصميم داخلي يدعم قوس القدم — تتحرك فيه طول النهار وتحس كأنك لابس حذاء جديد</p>
+      </div>
+
+      <div class="feature-card p-6 rounded-xl">
+        <div class="text-3xl mb-4">✨</div>
+        <h3 class="font-bold text-lg mb-2" style="color:var(--gold)">ستايل كلاسيكي أنيق</h3>
+        <p class="text-sm leading-relaxed" style="color:var(--t-65)">تصميم موكاسان يلبسك في كل مناسبة — رسمي، كاجوال، عمل، خرجة عائلية</p>
+      </div>
+
+      <div class="feature-card p-6 rounded-xl">
+        <div class="text-3xl mb-4">🎨</div>
+        <h3 class="font-bold text-lg mb-2" style="color:var(--gold)">لونين متاحين</h3>
+        <p class="text-sm leading-relaxed" style="color:var(--t-65)">اختار بين الأسود الكلاسيكي والمرون الدافئ — كل واحد بشخصيته وأناقته</p>
+      </div>
+
+      <div class="feature-card p-6 rounded-xl">
+        <div class="text-3xl mb-4">📦</div>
+        <h3 class="font-bold text-lg mb-2" style="color:var(--gold)">توصيل لكامل تونس</h3>
+        <p class="text-sm leading-relaxed" style="color:var(--t-65)">إطلب من أي ولاية — يوصلك في وقت قصير مباشرة لبابك بدون تعب</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     TESTIMONIALS
+══════════════════════════════════════════════════════ -->
+<section id="testimonials" class="py-20 px-6 reveal" style="background:var(--dark)">
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-14">
+      <div class="section-label mb-4">آراء عملاءنا</div>
+      <h2 class="font-black" style="font-size:clamp(1.5rem,4vw,2.5rem)">
+        هوما قالوا — <span style="color:var(--gold)">مش إحنا</span>
+      </h2>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+
+      <div class="testimonial-card p-6 rounded-xl">
+        <div class="flex text-yellow-400 text-lg mb-3">★★★★★</div>
+        <p class="text-sm leading-relaxed mb-4" style="color:var(--t-80)">
+          "والله فاجأني — من أول ما لبستو حسيت بالراحة. جلد  واضح من اللمسة. صاحبي سألني وينو اشتريته! 🔥"
+        </p>
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm" style="background:var(--brown); color:white">م.ع</div>
+          <div>
+            <div class="font-bold text-sm">محمد العيادي</div>
+            <div class="text-xs" style="color:var(--t-45)">صفاقس ⭐</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card p-6 rounded-xl">
+        <div class="flex text-yellow-400 text-lg mb-3">★★★★★</div>
+        <p class="text-sm leading-relaxed mb-4" style="color:var(--t-80)">
+          "اشتريت اللون المرون وما ندمتش. التوصيل جاء بزرييف وراضي على الجودة والسعر. 49 دينار لجلد  حقيقي؟ حاجة!"
+        </p>
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm" style="background:#5C3D2E; color:white">ك.ب</div>
+          <div>
+            <div class="font-bold text-sm">كريم بن علي</div>
+            <div class="text-xs" style="color:var(--t-45)">تونس العاصمة ⭐</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card p-6 rounded-xl">
+        <div class="flex text-yellow-400 text-lg mb-3">★★★★★</div>
+        <p class="text-sm leading-relaxed mb-4" style="color:var(--t-80)">
+          "جيت نشري للولدي. ما صدقتش كيفاش جلد أصيل بسعر كيما هذا. شريت زوز أزواج — واحد أسود وواحد مرون 😄"
+        </p>
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm" style="background:var(--red-dark); color:white">س.ج</div>
+          <div>
+            <div class="font-bold text-sm">سليم الجلولي</div>
+            <div class="text-xs" style="color:var(--t-45)">سوسة ⭐</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Stars summary -->
+    <div class="mt-10 text-center">
+      <div class="inline-flex items-center gap-4 px-8 py-4 rounded-2xl" style="background:var(--dark2); border:1px solid rgba(201,164,81,0.2)">
+        <div class="text-5xl font-black" style="color:var(--gold)">4.9</div>
+        <div>
+          <div class="flex text-yellow-400 text-xl mb-1">★★★★★</div>
+          <div class="text-sm" style="color:var(--t-50)">على أساس آراء العملاء</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     HOW IT WORKS
+══════════════════════════════════════════════════════ -->
+<section class="py-20 px-6 reveal" style="background:var(--dark2)">
+  <div class="max-w-4xl mx-auto">
+    <div class="text-center mb-14">
+      <div class="section-label mb-4">كيفاش تطلب؟</div>
+      <h2 class="font-black" style="font-size:clamp(1.5rem,4vw,2.5rem)">
+        3 خطوات بس — وصل لبابك 🚪
+      </h2>
+    </div>
+
+    <div class="flex flex-col gap-8 relative">
+      <!-- Vertical line -->
+      <div class="hidden md:block absolute right-8 top-16 bottom-16 w-0.5 opacity-20" style="background:var(--gold)"></div>
+
+      <!-- Step 1 -->
+      <div class="flex gap-6 items-start reveal">
+        <div class="step-circle">1</div>
+        <div class="pt-2">
+          <h3 class="font-bold text-xl mb-2" style="color:var(--gold)">إملى الفورمة</h3>
+          <p style="color:var(--t-70); line-height:1.8">اكتب اسمك، رقم هاتفك، عنوانك، واختار اللون والقياس اللي يناسبك من الفورمة في الأسفل</p>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="flex gap-6 items-start reveal">
+        <div class="step-circle">2</div>
+        <div class="pt-2">
+          <h3 class="font-bold text-xl mb-2" style="color:var(--gold)">نتصلو بيك للتأكيد</h3>
+          <p style="color:var(--t-70); line-height:1.8">فريقنا يتصل بيك في أقرب وقت باش يأكد طلبك ويعطيك كل المعلومات اللازمة</p>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="flex gap-6 items-start reveal">
+        <div class="step-circle">3</div>
+        <div class="pt-2">
+          <h3 class="font-bold text-xl mb-2" style="color:var(--gold)">استقبل طلبك لبابك</h3>
+          <p style="color:var(--t-70); line-height:1.8">الحذاء يتبعثلك مع التوصيل لبابك — تدفع عند الاستلام. بسيط وآمن!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     OFFERS SYSTEM
+══════════════════════════════════════════════════════ -->
+<section id="offers" class="py-20 px-6 reveal" style="background:var(--dark)">
+  <div class="max-w-2xl mx-auto">
+
+    <div class="text-center mb-10">
+      <div class="section-label mb-3">اختار عرضك</div>
+      <h2 class="font-black" style="font-size:clamp(1.5rem,4vw,2.6rem)">
+        🎁 عروضنا اليوم
+      </h2>
+      <p class="mt-2 text-sm" style="color:var(--t-50)">كلما زدت الكمية، كلما وفّرت أكثر!</p>
+    </div>
+
+    <!-- OFFER CARDS -->
+    <div class="flex flex-col gap-4" id="offerCards">
+
+      <!-- ── OFFER 1 ── -->
+      <div class="offer-card cursor-pointer rounded-2xl p-5 transition-all duration-300 relative overflow-hidden"
+           data-offer="1" data-qty="1" data-price="49.00" data-original="79.00" data-discount="38" data-delivery="false"
+           onclick="selectOffer(this)"
+           style="background:var(--dark2); border:2px solid rgba(201,164,81,0.15)">
+
+        <div class="flex items-center justify-between gap-4">
+          <!-- Radio -->
+          <div class="offer-radio w-6 h-6 rounded-full border-2 flex-shrink-0 transition-all duration-300"
+               style="border-color:rgba(201,164,81,0.4)"></div>
+
+          <!-- Content -->
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="font-black text-base" style="color:var(--cream)">واحد فقط</span>
+            </div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="font-black text-xl" style="color:var(--red)">49,00 <span class="text-sm">د.ت</span></span>
+              <span class="text-sm line-through" style="color:var(--t-35)">79,00 د.ت</span>
+            </div>
+            <div class="text-xs mt-1" style="color:var(--t-45)">🚚 التوصيل: +7,00 د.ت</div>
+          </div>
+
+          <!-- Discount badge -->
+          <div class="flex-shrink-0 text-center rounded-xl px-3 py-2" style="background:rgba(200,16,46,0.15); border:1px solid rgba(200,16,46,0.3)">
+            <div class="font-black text-lg leading-none" style="color:var(--red)">-38%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── OFFER 2 ── -->
+      <div class="offer-card cursor-pointer rounded-2xl p-5 transition-all duration-300 relative overflow-hidden"
+           data-offer="2" data-qty="2" data-price="98.00" data-original="165.00" data-discount="41" data-delivery="true"
+           onclick="selectOffer(this)"
+           style="background:var(--dark2); border:2px solid rgba(201,164,81,0.15)">
+
+        <!-- POPULAR badge -->
+        <div class="absolute top-0 left-0 right-0 text-center py-1 text-xs font-black tracking-wider"
+             style="background:linear-gradient(90deg,var(--gold),var(--gold-light),var(--gold)); color:var(--dark)">
+          ⭐ الأكثر طلبًا ⭐
+        </div>
+
+        <div class="flex items-center justify-between gap-4 mt-6">
+          <!-- Radio -->
+          <div class="offer-radio w-6 h-6 rounded-full border-2 flex-shrink-0 transition-all duration-300"
+               style="border-color:rgba(201,164,81,0.4)"></div>
+
+          <!-- Content -->
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-1 flex-wrap">
+              <span class="font-black text-base" style="color:var(--cream)">اثنين معًا</span>
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full" style="background:rgba(201,164,81,0.15); color:var(--gold)">
+                🎁 التوصيل مجاني
+              </span>
+            </div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="font-black text-xl" style="color:var(--red)">98,00 <span class="text-sm">د.ت</span></span>
+              <span class="text-sm line-through" style="color:var(--t-35)">165,00 د.ت</span>
+            </div>
+            <div class="text-xs mt-1 font-semibold" style="color:var(--gold)">🎁 إذا تاخو 2 التوصيل يولي ببلاش 🎁</div>
+          </div>
+
+          <!-- Discount badge -->
+          <div class="flex-shrink-0 text-center rounded-xl px-3 py-2" style="background:rgba(200,16,46,0.15); border:1px solid rgba(200,16,46,0.3)">
+            <div class="font-black text-lg leading-none" style="color:var(--red)">-41%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── OFFER 3 ── -->
+      <div class="offer-card cursor-pointer rounded-2xl p-5 transition-all duration-300 relative overflow-hidden"
+           data-offer="3" data-qty="3" data-price="140.00" data-original="244.00" data-discount="43" data-delivery="true"
+           onclick="selectOffer(this)"
+           style="background:var(--dark2); border:2px solid rgba(201,164,81,0.15)">
+
+        <div class="flex items-center justify-between gap-4">
+          <!-- Radio -->
+          <div class="offer-radio w-6 h-6 rounded-full border-2 flex-shrink-0 transition-all duration-300"
+               style="border-color:rgba(201,164,81,0.4)"></div>
+
+          <!-- Content -->
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-1 flex-wrap">
+              <span class="font-black text-base" style="color:var(--cream)">ثلاثة معًا</span>
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full" style="background:rgba(201,164,81,0.15); color:var(--gold)">
+                🎁 أفضل قيمة
+              </span>
+            </div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="font-black text-xl" style="color:var(--red)">140,00 <span class="text-sm">د.ت</span></span>
+              <span class="text-sm line-through" style="color:var(--t-35)">244,00 د.ت</span>
+            </div>
+            <div class="text-xs mt-1 font-semibold" style="color:var(--gold)">🎁 إذا تاخو 3 التوصيل يولي ببلاش + تخفيض 🎁</div>
+          </div>
+
+          <!-- Discount badge -->
+          <div class="flex-shrink-0 text-center rounded-xl px-3 py-2" style="background:rgba(200,16,46,0.15); border:1px solid rgba(200,16,46,0.3)">
+            <div class="font-black text-lg leading-none" style="color:var(--red)">-43%</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /offerCards -->
+
+    <!-- Savings summary bar -->
+    <div id="savingsSummary" class="mt-6 rounded-xl px-6 py-4 text-center transition-all duration-500"
+         style="background:linear-gradient(135deg,rgba(200,16,46,0.1),rgba(201,164,81,0.08)); border:1px solid rgba(201,164,81,0.2)">
+      <span class="text-sm" style="color:var(--t-60)">وفّرت: </span>
+      <span id="savingsAmount" class="font-black text-lg" style="color:var(--gold)">30,00 د.ت</span>
+      <span class="mx-2 text-sm" style="color:var(--t-40)">|</span>
+      <span class="text-sm" style="color:var(--t-60)">السعر النهائي: </span>
+      <span id="finalPrice" class="font-black text-xl" style="color:var(--red)">49,00 د.ت</span>
+      <div id="deliveryNote" class="text-xs mt-1 font-bold" style="color:var(--gold)">🚚 التوصيل: +7,00 د.ت</div>
+    </div>
+
+    <!-- CTA after offer selection -->
+    <div class="mt-6 text-center">
+      <a href="#order" class="btn-gold inline-block rounded-xl text-xl py-5 px-12 font-black w-full" onclick="scrollToOrder()">
+        ✅ إطلب الآن
+      </a>
+      <p class="mt-3 text-xs" style="color:var(--t-40)">🔒 الدفع عند الاستلام — بدون مخاطرة</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     GUARANTEE
+══════════════════════════════════════════════════════ -->
+<section class="py-20 px-6 reveal" style="background:var(--dark2)">
+  <div class="max-w-4xl mx-auto">
+    <div class="flex flex-col md:flex-row items-center gap-10">
+      <!-- Badge -->
+      <div class="guarantee-badge">
+        <div class="text-3xl mb-1">🛡️</div>
+        <div class="font-black text-lg leading-none text-center" style="color:var(--gold)">ضمان</div>
+        <div class="font-black text-2xl" style="color:var(--gold)">100%</div>
+        <div class="text-xs text-center mt-1" style="color:var(--t-60)">جودة مضمونة</div>
+      </div>
+
+      <!-- Text -->
+      <div>
+        <div class="section-label mb-4">ضمان الجودة</div>
+        <h2 class="font-black text-2xl mb-4">خايف؟ إحنا نطمنك 💯</h2>
+        <p class="text-lg leading-relaxed mb-4" style="color:var(--t-75)">
+          نحن واثقين من جودة منتاجنا — لأنه جلد، نعل مخيط، وتصنيع محكم. إذا المنتاج وصلك ومعندوش الجودة اللي وعدناك بيها، <strong style="color:var(--gold)">نبدلوهولك فوري بدون أي مشاكل.</strong>
+        </p>
+        <ul class="space-y-2 text-sm" style="color:var(--t-65)">
+          <li class="flex items-center gap-2">✓ الدفع عند الاستلام — ما تخسرش فلوس</li>
+          <li class="flex items-center gap-2">✓ جودة مضمونة أو استبدال فوري</li>
+          <li class="flex items-center gap-2">✓ توصيل آمن لبابك</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     FAQ
+══════════════════════════════════════════════════════ -->
+<section id="faq" class="py-20 px-6 reveal" style="background:var(--dark)">
+  <div class="max-w-3xl mx-auto">
+    <div class="text-center mb-14">
+      <div class="section-label mb-4">أسئلة شائعة</div>
+      <h2 class="font-black" style="font-size:clamp(1.5rem,4vw,2.5rem)">
+        عندك سؤال؟ 🤔 تفضل
+      </h2>
+    </div>
+
+    <div class="space-y-2" id="faqContainer">
+
+      <div class="faq-item rounded-xl px-6 py-5 cursor-pointer" style="background:var(--dark2)" onclick="toggleFaq(this)">
+        <div class="flex justify-between items-center">
+          <span class="font-bold text-base">هل الجلد  فعلًا ؟</span>
+          <span class="faq-arrow text-xl" style="color:var(--gold)">▾</span>
+        </div>
+        <div class="faq-answer pt-4 text-sm" style="color:var(--t-65); line-height:1.9">
+          إيه، جلد  100% (Cuir). واضح من الرائحة، الملمس، والمسامية. مش كيما الجلد اللي يتقشر بعد أشهر قليلة.
+        </div>
+      </div>
+
+      <div class="faq-item rounded-xl px-6 py-5 cursor-pointer" style="background:var(--dark2)" onclick="toggleFaq(this)">
+        <div class="flex justify-between items-center">
+          <span class="font-bold text-base">ماهي القياسات المتاحة؟</span>
+          <span class="faq-arrow text-xl" style="color:var(--gold)">▾</span>
+        </div>
+        <div class="faq-answer pt-4 text-sm" style="color:var(--t-65); line-height:1.9">
+          القياسات المتاحة من 40 لـ 44. إذا ما عرفتش قياسك الصحيح، ننصح تأخذ قياس أكبر من رجلك بنص رقم.
+        </div>
+      </div>
+
+      <div class="faq-item rounded-xl px-6 py-5 cursor-pointer" style="background:var(--dark2)" onclick="toggleFaq(this)">
+        <div class="flex justify-between items-center">
+          <span class="font-bold text-base">كيفاش يصير الدفع؟</span>
+          <span class="faq-arrow text-xl" style="color:var(--gold)">▾</span>
+        </div>
+        <div class="faq-answer pt-4 text-sm" style="color:var(--t-65); line-height:1.9">
+          الدفع عند الاستلام (Cash on Delivery) — من خلال شركة التوصيل الموثوقة إلي نتعاملوا معاها.
+        </div>
+      </div>
+
+      <div class="faq-item rounded-xl px-6 py-5 cursor-pointer" style="background:var(--dark2)" onclick="toggleFaq(this)">
+        <div class="flex justify-between items-center">
+          <span class="font-bold text-base">وقتاش يوصلني الحذاء؟</span>
+          <span class="faq-arrow text-xl" style="color:var(--gold)">▾</span>
+        </div>
+        <div class="faq-answer pt-4 text-sm" style="color:var(--t-65); line-height:1.9">
+          التوصيل يصير عادةً في ظرف 2 إلى 4 أيام عمل لكامل الولايات التونسية. بعد ما تأكد طلبك يجيلك رقم التتبع.
+        </div>
+      </div>
+
+      <div class="faq-item rounded-xl px-6 py-5 cursor-pointer" style="background:var(--dark2)" onclick="toggleFaq(this)">
+        <div class="flex justify-between items-center">
+          <span class="font-bold text-base">ما عجبتنيش — نجم نبدلو؟</span>
+          <span class="faq-arrow text-xl" style="color:var(--gold)">▾</span>
+        </div>
+        <div class="faq-answer pt-4 text-sm" style="color:var(--t-65); line-height:1.9">
+          إذا فيه مشكلة في الجودة أو القياس غلط، تواصل معنا مباشرة ونحلو المشكلة. راحتك وثقتك هي أهم حاجة عندنا.
+        </div>
+      </div>
+
+      <div class="faq-item rounded-xl px-6 py-5 cursor-pointer" style="background:var(--dark2)" onclick="toggleFaq(this)">
+        <div class="flex justify-between items-center">
+          <span class="font-bold text-base">هل الحذاء يناسب يومين — عمل وخرجة؟</span>
+          <span class="faq-arrow text-xl" style="color:var(--gold)">▾</span>
+        </div>
+        <div class="faq-answer pt-4 text-sm" style="color:var(--t-65); line-height:1.9">
+          بالكامل — الموكاسان تصميمه كلاسيكي مرن. يلبسك مع البنطلون الرسمي والجينز على حد سواء. مثالي للرجل اللي يحب يبان أنيق في كل الأوقات.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     ORDER FORM (FINAL CTA)
+══════════════════════════════════════════════════════ -->
+<section id="order" class="py-20 px-6 reveal scroll-mt-28" style="background: radial-gradient(ellipse at 50% 0%, #2A1A10 0%, var(--dark2) 100%)">
+  <div class="max-w-2xl mx-auto">
+
+    <!-- Urgency header -->
+    <div class="text-center mb-10">
+      <div class="section-label mb-4">آخر فرصة</div>
+      <h2 class="font-black mb-4" style="font-size:clamp(1.6rem,4vw,2.8rem)">
+        إطلب الآن — قبل ما <span style="color:var(--red)">العرض ينتهي</span> ⏰
+      </h2>
+      <p style="color:var(--t-65)">سعر 49 DT بدل 79 DT — الدفع عند الاستلام</p>
+
+      <!-- Countdown bar -->
+      <div class="mt-4 w-full h-2 rounded-full overflow-hidden" style="background:var(--dark3)">
+        <div class="progress-bar rounded-full"></div>
+      </div>
+      <p class="mt-2 text-xs" style="color:var(--t-40)">العرض ينتهي قريبًا!</p>
+    </div>
+
+    <!-- Form -->
+    <div class="rounded-2xl p-8" style="background:var(--dark); border:1px solid rgba(201,164,81,0.2); box-shadow:0 20px 60px rgba(0,0,0,0.5)">
+      <form id="orderForm" onsubmit="submitOrder(event)">
+
+        <!-- Name -->
+        <div class="mb-5">
+          <label class="block text-sm font-semibold mb-2" style="color:var(--gold)">الاسم الكامل *</label>
+          <input type="text" id="fullName" class="form-input" placeholder="مثال: محمد التونسي" required />
+        </div>
+
+        <!-- Phone -->
+        <div class="mb-5">
+          <label class="block text-sm font-semibold mb-2" style="color:var(--gold)">رقم الهاتف *</label>
+          <input type="tel" id="phone" class="form-input" placeholder="مثال: 55 123 456" required />
+        </div>
+
+        <!-- Address -->
+        <div class="mb-5">
+          <label class="block text-sm font-semibold mb-2" style="color:var(--gold)">العنوان الكامل (الولاية + المعتمدية) *</label>
+          <input type="text" id="address" class="form-input" placeholder="مثال: صفاقس، شارع الحبيب بورقيبة" required />
+        </div>
+
+        <!-- Mini offer selector inside form -->
+        <div class="mb-5">
+          <div class="text-xs font-bold mb-2" style="color:var(--gold)">غيّر الكمية:</div>
+          <div class="grid grid-cols-3 gap-2">
+            <button type="button" class="form-offer-btn active py-2 px-1 rounded-lg text-xs font-bold transition-all"
+                    onclick="selectFormOffer(1,'49.00','79.00','30.00',false,this)"
+                    style="background:var(--red); color:white; border:2px solid var(--red)">
+              1 زوج<br/><span class="font-black">49 د.ت</span><br/><span style="opacity:0.8">+7 د.ت توصيل</span>
+            </button>
+            <button type="button" class="form-offer-btn py-2 px-1 rounded-lg text-xs font-bold transition-all"
+                    onclick="selectFormOffer(2,'98.00','165.00','67.00',true,this)"
+                    style="background:var(--dark3); color:var(--cream); border:2px solid rgba(201,164,81,0.3)">
+              2 زوج<br/><span class="font-black">98 د.ت</span><br/><span style="opacity:0.8">-41% 🚚</span>
+            </button>
+            <button type="button" class="form-offer-btn py-2 px-1 rounded-lg text-xs font-bold transition-all"
+                    onclick="selectFormOffer(3,'140.00','244.00','104.00',true,this)"
+                    style="background:var(--dark3); color:var(--cream); border:2px solid rgba(201,164,81,0.3)">
+              3 زوج<br/><span class="font-black">140 د.ت</span><br/><span style="opacity:0.8">-43% 🚚</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Dynamic pairs: color + size per qty -->
+        <div id="pairsContainer" class="mb-5 flex flex-col gap-4"></div>
+
+        <!-- Selected offer display -->
+        <div class="mb-5 rounded-xl p-4" style="background:var(--dark3); border:1px solid rgba(201,164,81,0.2)">
+          <div class="text-xs font-bold mb-3" style="color:var(--gold)">العرض المختار:</div>
+          <div class="flex flex-col gap-2">
+            <div class="flex justify-between text-sm">
+              <span style="color:var(--t-60)">الكمية:</span>
+              <span id="formQtyLabel" class="font-bold" style="color:var(--cream)">1 زوج</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span style="color:var(--t-60)">السعر الأصلي:</span>
+              <span id="formOriginalPrice" class="line-through" style="color:var(--t-35)">79,00 د.ت</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span style="color:var(--t-60)">التوفير:</span>
+              <span id="formSavings" class="font-bold" style="color:var(--red)">- 30,00 د.ت</span>
+            </div>
+            <div id="formDelivery" class="flex justify-between text-sm">
+              <span style="color:var(--t-60)">التوصيل:</span>
+              <span id="formDeliveryAmount" class="font-bold" style="color:var(--gold)">+7,00 د.ت</span>
+            </div>
+            <div class="divider my-1"></div>
+            <div class="flex justify-between font-black text-lg">
+              <span style="color:var(--gold)">المجموع:</span>
+              <span id="totalPrice" style="color:var(--red)">56,00 د.ت</span>
+            </div>
+          </div>
+          <div class="text-xs mt-2 text-center" style="color:var(--t-40)">🔒 الدفع عند الاستلام</div>
+        </div>
+
+        <!-- Hidden quantity field -->
+        <input type="hidden" id="quantity" value="1" />
+
+        <!-- Submit -->
+        <button type="submit" id="submitBtn" class="btn-gold w-full text-xl py-5 rounded-xl font-black tracking-wide">
+          ✅ أكد طلبي الآن — 56,00 د.ت
+        </button>
+
+        <p class="text-center mt-3 text-xs" style="color:var(--t-40)">
+          📞 سنتصل بك في أقرب وقت لتأكيد الطلب
+        </p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════════════════ -->
+<footer class="py-12 px-6" style="background:var(--dark); border-top:1px solid rgba(201,164,81,0.1)">
+  <div class="max-w-5xl mx-auto">
+    <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+      <!-- Brand -->
+      <div class="text-center md:text-right">
+        <div class="font-black text-2xl mb-1" style="color:var(--gold)">MBA</div>
+        <div class="text-xs tracking-widest uppercase mb-2" style="color:var(--t-40)">Cuir</div>
+        <p class="text-sm" style="color:var(--t-40)">أحذية جلد — صنع بعناية واحترام</p>
+      </div>
+
+      <!-- Quick links -->
+      <div class="flex gap-6 text-sm" style="color:var(--t-50)">
+        <a href="#product" class="hover:text-white transition-colors">المنتج</a>
+        <a href="#features" class="hover:text-white transition-colors">المميزات</a>
+        <a href="#order" class="hover:text-white transition-colors">اطلب الآن</a>
+        <a href="#faq" class="hover:text-white transition-colors">المساعدة</a>
+      </div>
+    </div>
+
+    <div class="divider my-8"></div>
+
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-xs" style="color:var(--t-30)">
+      <span>© 2025 MBA Cuir — جميع الحقوق محفوظة</span>
+      <div class="flex gap-4">
+        <span>سياسة الخصوصية</span>
+        <span>شروط الاستخدام</span>
+        <span>تواصل معنا</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ══════════════════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════════════════ -->
+<script>
+  // ── THEME TOGGLE ──
+  (function() {
+    const saved = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', saved);
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('themeToggle').textContent = saved === 'light' ? '☀️' : '🌙';
+    });
+  })();
+
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    document.getElementById('themeToggle').textContent = next === 'light' ? '☀️' : '🌙';
+  }
+
+  // ── COUNTDOWN TIMER ──
+  let timeLeft = 14 * 60 + 59;
+  const timerEl = document.getElementById('timer');
+  setInterval(() => {
+    if (timeLeft <= 0) { timerEl.textContent = '00:00'; return; }
+    timeLeft--;
+    const m = Math.floor(timeLeft / 60).toString().padStart(2,'0');
+    const s = (timeLeft % 60).toString().padStart(2,'0');
+    timerEl.textContent = `${m}:${s}`;
+  }, 1000);
+
+  // ── FAQ TOGGLE ──
+  function toggleFaq(el) {
+    const isOpen = el.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) el.classList.add('open');
+  }
+
+  // ── COLOR SELECTOR ──
+  function selectColor(c) {
+    heroGoTo(c === 'black' ? 1 : 0);
+    resetHeroInterval();
+  }
+
+  // ── HERO SLIDER ──
+  let heroCurrent = 0;
+  let heroInterval;
+
+  function heroGoTo(index) {
+    heroCurrent = index;
+    const imgBrown = document.getElementById('heroImgBrown');
+    const imgBlack = document.getElementById('heroImgBlack');
+    if (index === 1) {
+      imgBlack.style.opacity = '1';
+      imgBrown.style.opacity = '0';
+    } else {
+      imgBlack.style.opacity = '0';
+      imgBrown.style.opacity = '1';
+    }
+
+    // Sync color buttons
+    const isBlack = index === 1;
+    document.getElementById('colorBlack').style.borderColor = isBlack ? 'var(--gold)' : 'transparent';
+    document.getElementById('colorBrown').style.borderColor = !isBlack ? 'var(--gold)' : 'transparent';
+
+    // Update dots
+    document.querySelectorAll('.hero-dot').forEach((dot, i) => {
+      dot.style.background = i === heroCurrent ? 'var(--red)' : 'var(--dark3)';
+      dot.style.boxShadow = i === heroCurrent ? '0 0 8px rgba(200,16,46,0.5)' : 'none';
+    });
+  }
+
+  function heroNext() {
+    heroGoTo((heroCurrent + 1) % 2);
+    resetHeroInterval();
+  }
+
+  function heroPrev() {
+    heroGoTo((heroCurrent - 1 + 2) % 2);
+    resetHeroInterval();
+  }
+
+  function resetHeroInterval() {
+    clearInterval(heroInterval);
+    heroInterval = setInterval(heroNext, 4000);
+  }
+
+  // Start auto-rotate on load
+  heroInterval = setInterval(heroNext, 4000);
+
+  // ─── GLOBAL OFFER STATE ───
+  let currentOffer = { qty: 1, price: '49.00', original: '79.00', savings: '30.00', delivery: false };
+
+  // ─── OFFER CARD SELECTOR (big section) ───
+  function selectOffer(el) {
+    // Reset all cards
+    document.querySelectorAll('.offer-card').forEach(c => {
+      c.style.borderColor = 'rgba(201,164,81,0.15)';
+      c.style.background  = 'var(--dark2)';
+      c.style.boxShadow   = 'none';
+      c.style.transform   = 'scale(1)';
+      c.querySelector('.offer-radio').style.background  = 'transparent';
+      c.querySelector('.offer-radio').style.borderColor = 'rgba(201,164,81,0.4)';
+    });
+
+    // Highlight selected
+    el.style.borderColor = 'var(--red)';
+    el.style.background  = 'linear-gradient(135deg, rgba(200,16,46,0.08) 0%, var(--dark2) 100%)';
+    el.style.boxShadow   = '0 0 24px rgba(200,16,46,0.2), 0 8px 32px rgba(0,0,0,0.3)';
+    el.style.transform   = 'scale(1.02)';
+    el.querySelector('.offer-radio').style.background  = 'var(--red)';
+    el.querySelector('.offer-radio').style.borderColor = 'var(--red)';
+
+    // Update state
+    const qty      = parseInt(el.dataset.qty);
+    const price    = parseFloat(el.dataset.price);
+    const original = parseFloat(el.dataset.original);
+    const savings  = (original - price).toFixed(2);
+    const delivery = el.dataset.delivery === 'true';
+
+    currentOffer = { qty, price: price.toFixed(2), original: original.toFixed(2), savings, delivery };
+
+    // Update summary bar
+    document.getElementById('savingsAmount').textContent = savings.replace('.', ',') + ' د.ت';
+    const finalTotal = (parseFloat(price) + (delivery ? 0 : 7)).toFixed(2);
+    document.getElementById('finalPrice').textContent    = finalTotal.replace('.', ',') + ' د.ت';
+    const deliveryNote = document.getElementById('deliveryNote');
+    if (delivery) {
+      deliveryNote.textContent = '🚚 التوصيل مجاني على هذا العرض!';
+    } else {
+      deliveryNote.textContent = '🚚 التوصيل: +7,00 د.ت';
+    }
+
+    // Sync form mini-selector
+    syncFormOffer(qty, price.toFixed(2), original.toFixed(2), savings, delivery);
+  }
+
+  // ─── FORM MINI OFFER SELECTOR ───
+  function selectFormOffer(qty, price, original, savings, delivery, btn) {
+    currentOffer = { qty, price, original, savings, delivery };
+
+    // Reset mini btns
+    document.querySelectorAll('.form-offer-btn').forEach(b => {
+      b.style.background  = 'var(--dark3)';
+      b.style.borderColor = 'rgba(201,164,81,0.3)';
+      b.style.color       = 'var(--cream)';
+    });
+    btn.style.background  = 'var(--red)';
+    btn.style.borderColor = 'var(--red)';
+    btn.style.color       = 'white';
+
+    updateFormSummary(qty, price, original, savings, delivery);
+
+    // Sync big cards
+    const card = document.querySelector(`.offer-card[data-qty="${qty}"]`);
+    if (card) selectOffer(card);
+  }
+
+  function syncFormOffer(qty, price, original, savings, delivery) {
+    const btns = document.querySelectorAll('.form-offer-btn');
+    btns.forEach((b, i) => {
+      const btnQty = i + 1;
+      if (btnQty === qty) {
+        b.style.background  = 'var(--red)';
+        b.style.borderColor = 'var(--red)';
+        b.style.color       = 'white';
+      } else {
+        b.style.background  = 'var(--dark3)';
+        b.style.borderColor = 'rgba(201,164,81,0.3)';
+        b.style.color       = 'var(--cream)';
+      }
+    });
+    updateFormSummary(qty, price, original, savings, delivery);
+  }
+
+  function updateFormSummary(qty, price, original, savings, delivery) {
+    const qtyLabels = { 1: '1 زوج', 2: '2 زوج', 3: '3 زوج' };
+    document.getElementById('formQtyLabel').textContent    = qtyLabels[qty] || qty + ' زوج';
+    document.getElementById('formOriginalPrice').textContent = String(original).replace('.', ',') + ' د.ت';
+    document.getElementById('formSavings').textContent     = '- ' + String(savings).replace('.', ',') + ' د.ت';
+
+    const deliveryCost = delivery ? 0 : 7;
+    const totalNum = parseFloat(price) + deliveryCost;
+    const totalStr = totalNum.toFixed(2).replace('.', ',') + ' د.ت';
+
+    document.getElementById('totalPrice').textContent      = totalStr;
+    document.getElementById('quantity').value              = qty;
+
+    const formDelAmount = document.getElementById('formDeliveryAmount');
+    if (delivery) {
+      formDelAmount.textContent = '🚚 مجاني!';
+    } else {
+      formDelAmount.textContent = '+7,00 د.ت';
+    }
+
+    document.getElementById('submitBtn').textContent = `✅ أكد طلبي الآن — ${totalStr}`;
+
+    // Render color+size rows based on qty
+    renderPairs(qty);
+  }
+
+  function scrollToOrder() {
+    setTimeout(() => {
+      document.getElementById('order').scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  }
+
+  // Auto-select offer 1 on load
+  window.addEventListener('load', () => {
+    const first = document.querySelector('.offer-card[data-offer="1"]');
+    if (first) selectOffer(first);
+  });
+
+  // ─── RENDER PAIR ROWS ───
+  function renderPairs(qty) {
+    const container = document.getElementById('pairsContainer');
+    container.innerHTML = '';
+
+    const pairLabel = qty === 1
+      ? 'اختار اللون والقياس'
+      : `اختار اللون والقياس لكل زوج (${qty} أزواج)`;
+
+    const header = document.createElement('div');
+    header.className = 'text-xs font-bold mb-1';
+    header.style.color = 'var(--gold)';
+    header.textContent = pairLabel;
+    container.appendChild(header);
+
+    for (let i = 0; i < qty; i++) {
+      const pairNum = qty > 1 ? `الزوج ${arabicNum(i + 1)}` : '';
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'rounded-xl p-4';
+      wrapper.style.cssText = 'background:var(--dark3); border:1px solid rgba(201,164,81,0.15)';
+
+      wrapper.innerHTML = `
+        ${qty > 1 ? `<div class="text-xs font-bold mb-3 flex items-center gap-2">
+          <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-black" style="background:var(--red); color:white">${i+1}</span>
+          <span style="color:var(--t-70)">${pairNum}</span>
+        </div>` : ''}
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold mb-2" style="color:var(--gold)">اللون *</label>
+            <select name="color_${i}" class="form-input pair-color" required>
+              <option value="">-- اختار اللون --</option>
+              <option value="أسود">⬤ أسود</option>
+              <option value="مرون">⬤ مرون</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold mb-2" style="color:var(--gold)">القياس *</label>
+            <select name="size_${i}" class="form-input pair-size" required>
+              <option value="">-- اختار القياس --</option>
+              <option value="40">40</option>
+              <option value="41">41</option>
+              <option value="42">42</option>
+              <option value="43">43</option>
+              <option value="44">44</option>
+            </select>
+          </div>
+        </div>`;
+
+      container.appendChild(wrapper);
+    }
+  }
+
+  function arabicNum(n) {
+    const nums = ['', 'الأول', 'الثاني', 'الثالث'];
+    return nums[n] || n;
+  }
+  function submitOrder(e) {
+    e.preventDefault();
+    const name    = document.getElementById('fullName').value.trim();
+    const phone   = document.getElementById('phone').value.trim();
+    const address = document.getElementById('address').value.trim();
+    const qty     = parseInt(document.getElementById('quantity').value);
+
+    if (!name || !phone || !address) {
+      alert('⚠️ من فضلك إملى جميع الخانات المطلوبة');
+      return;
+    }
+
+    const pairs = [];
+    const colorSelects = document.querySelectorAll('.pair-color');
+    const sizeSelects  = document.querySelectorAll('.pair-size');
+    let valid = true;
+
+    colorSelects.forEach((sel, i) => {
+      if (!sel.value || !sizeSelects[i].value) { valid = false; return; }
+      pairs.push({ pair: i + 1, color: sel.value, size: sizeSelects[i].value });
+    });
+
+    if (!valid) {
+      alert('⚠️ من فضلك اختار اللون والقياس لكل الأزواج');
+      return;
+    }
+
+    console.log('Order:', { name, phone, address, qty, pairs, price: currentOffer.price });
+
+    const orderData = {
+      name, phone, address, qty, pairs,
+      price: currentOffer.price,
+      delivery: currentOffer.delivery
+    };
+
+    // Save for confirmation page
+    localStorage.setItem('orderData', JSON.stringify(orderData));
+
+    // Disable button during request
+    const btn = document.getElementById('submitBtn');
+    btn.setAttribute('data-original', btn.textContent);
+    btn.disabled = true;
+    btn.textContent = '⏳ جاري إرسال الطلب...';
+
+    fetch('api/create-order.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(orderData)
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        localStorage.setItem('orderId', data.order_id);
+        window.location.href = 'confirmation.html';
+      } else {
+        alert('❌ ' + (data.message || 'فشل إرسال الطلب، حاول مرة أخرى'));
+        btn.disabled = false;
+        btn.textContent = document.getElementById('submitBtn').getAttribute('data-original') || btn.textContent;
+      }
+    })
+    .catch(err => {
+      console.error('Order error:', err);
+      alert('❌ فشل الاتصال، تأكد من تشغيل الخادم ثم حاول مرة أخرى');
+      btn.disabled = false;
+      btn.textContent = document.getElementById('submitBtn').getAttribute('data-original') || btn.textContent;
+    });
+  }
+
+  // ── SCROLL REVEAL ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

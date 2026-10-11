@@ -1,0 +1,24 @@
+# Secrets / environment (real credentials live here)
+.env
+
+# Local overrides
+docker-compose.override.yml
+
+# WordPress content managed at runtime — only the custom theme
+# and mu-plugins are tracked, the rest is reinstallable
+wp-content/*
+!wp-content/themes/
+wp-content/themes/*
+!wp-content/themes/wparabic-ecomm-cod/
+!wp-content/mu-plugins/
+
+# Databases / dumps
+mysql_data/
+*.db
+*.sql
+
+# Tool session data
+.opencode/
+
+# OS
+.DS_Store
