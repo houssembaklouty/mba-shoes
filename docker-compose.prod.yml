@@ -37,6 +37,8 @@ services:
       # regenere depuis l'environnement a chaque recreation).
       WORDPRESS_CONFIG_EXTRA: |
         define('WP_CACHE', true);
+        define('DISALLOW_FILE_EDIT', true);
+        define('DISABLE_WP_CRON', true);
     volumes:
       # Seul wp-content est monte : la boutique est entierement dans
       # WordPress (theme wparabic-ecomm-cod). L'ancienne landing page et son

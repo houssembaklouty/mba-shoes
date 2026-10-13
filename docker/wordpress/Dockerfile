@@ -16,9 +16,10 @@ COPY php.ini /usr/local/etc/php/conf.d/custom.ini
 COPY apache-ssl.conf /etc/apache2/sites-available/ssl.conf
 COPY performance.conf /etc/apache2/conf-available/performance.conf
 COPY cloudflare-realip.conf /etc/apache2/conf-available/cloudflare-realip.conf
+COPY apache-hardening.conf /etc/apache2/conf-available/apache-hardening.conf
 RUN chmod +x /usr/local/bin/auto-setup.sh \
-    && a2enmod ssl rewrite http2 deflate expires remoteip \
-    && a2enconf performance cloudflare-realip \
+    && a2enmod ssl rewrite http2 deflate expires remoteip headers \
+    && a2enconf performance cloudflare-realip apache-hardening \
     && a2ensite ssl.conf
 
 CMD bash -c "docker-entrypoint.sh apache2-foreground & sleep 30 && auto-setup.sh && wait"
