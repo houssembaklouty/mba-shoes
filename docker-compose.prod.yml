@@ -39,6 +39,15 @@ services:
         define('WP_CACHE', true);
         define('DISALLOW_FILE_EDIT', true);
         define('DISABLE_WP_CRON', true);
+      # SMTP Brevo — lus par wp-content/mu-plugins/smtp-from-env.php.
+      # Valeurs dans .env (non versionne), la cle n est jamais dans le depot.
+      MAIL_MAILER: ${MAIL_MAILER:-}
+      MAIL_HOST: ${MAIL_HOST:-}
+      MAIL_PORT: ${MAIL_PORT:-}
+      MAIL_USERNAME: ${MAIL_USERNAME:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      MAIL_ENCRYPTION: ${MAIL_ENCRYPTION:-}
+      MAIL_FROM_ADDRESS: ${MAIL_FROM_ADDRESS:-}
     volumes:
       # Seul wp-content est monte : la boutique est entierement dans
       # WordPress (theme wparabic-ecomm-cod). L'ancienne landing page et son
