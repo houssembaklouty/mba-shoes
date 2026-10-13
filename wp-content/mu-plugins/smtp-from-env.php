@@ -3,9 +3,10 @@
  * Plugin Name: SMTP depuis l'environnement
  * Description: Envoie les e-mails de WordPress par SMTP quand les variables MAIL_* sont definies (dev : Mailtrap). Sans elles, ne fait rien.
  *
- * Variables (docker-compose.yml, fichier .env) :
+ * Variables (docker-compose, fichier .env) :
  *   MAIL_MAILER=smtp, MAIL_HOST, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD,
- *   MAIL_ENCRYPTION (tls|ssl, facultatif), MAIL_FROM_ADDRESS (facultatif).
+ *   MAIL_ENCRYPTION (tls|ssl, facultatif), MAIL_FROM_ADDRESS (facultatif),
+ *   MAIL_FROM_NAME (facultatif — sinon le nom du site).
  *
  * Volontairement hors du theme : le theme reste generique, et la production
  * choisit son propre envoi (extension SMTP ou ces memes variables).
@@ -47,5 +48,16 @@ if (mba_smtp_env('MAIL_MAILER') === 'smtp' && mba_smtp_env('MAIL_HOST') !== '') 
             return is_email($admin) ? $admin : $default;
         }
         return $default;
+    }, 99);
+
+    // Nom d'expediteur : MAIL_FROM_NAME, sinon le nom du site (jamais
+    // « WordPress », la valeur par defaut du core).
+    add_filter('wp_mail_from_name', function ($default) {
+        $name = mba_smtp_env('MAIL_FROM_NAME');
+        if ($name !== '') {
+            return $name;
+        }
+        $site = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
+        return $site !== '' ? $site : $default;
     }, 99);
 }
