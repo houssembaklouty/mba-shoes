@@ -399,6 +399,23 @@ function wparabic_tint($hex, $ratio) {
 }
 
 /**
+ * Couleur hex -> rgba() avec alpha (voile des tuiles).
+ * Alpha 0 => transparent (voile desactive).
+ */
+function wparabic_hex_rgba($hex, $alpha) {
+    $hex = ltrim($hex, '#');
+    if (strlen($hex) === 3) {
+        $hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
+    }
+    $r = hexdec(substr($hex, 0, 2));
+    $g = hexdec(substr($hex, 2, 2));
+    $b = hexdec(substr($hex, 4, 2));
+    $a = max(0, min(1, (float) $alpha));
+
+    return $a <= 0 ? 'transparent' : sprintf('rgb(%d %d %d / %d%%)', $r, $g, $b, (int) round($a * 100));
+}
+
+/**
  * Couleur de texte lisible sur un fond donne : sombre sur fond clair, claire
  * sur fond sombre (luminance relative WCAG).
  */
@@ -464,6 +481,10 @@ function wparabic_inline_css() {
     $primary     = sanitize_hex_color(get_theme_mod('primary_color', WPARABIC_PRIMARY_DEFAULT)) ?: WPARABIC_PRIMARY_DEFAULT;
     $accent      = sanitize_hex_color(get_theme_mod('accent_color', WPARABIC_ACCENT_DEFAULT)) ?: WPARABIC_ACCENT_DEFAULT;
 
+    // Voile des tuiles (.block-item::before) : couleur + intensite, 0 % = transparent.
+    $overlay_hex  = sanitize_hex_color(get_theme_mod('tile_overlay_color', '#2b2c2c')) ?: '#2b2c2c';
+    $overlay_rgba = wparabic_hex_rgba($overlay_hex, max(0, min(100, (int) get_theme_mod('tile_overlay_opacity', 40))) / 100);
+
     // Les feuilles du theme lisent ces variables (repli : les couleurs
     // d'origine). Avec le bleu par defaut, les teintes calculees retombent
     // a quelques unites pres sur celles d'origine (#bce0f7, #f0f9ff, #a9cfe9).
@@ -476,6 +497,7 @@ function wparabic_inline_css() {
         . '--wparabic-topbar-bg:' . $topbar_bg . ';'
         . '--wparabic-footer-text:' . wparabic_footer_text_color($footer_bg) . ';'
         . '--wparabic-thumb-ratio:' . wparabic_thumb_ratio() . ';'
+        . '--wparabic-tile-overlay:' . $overlay_rgba . ';'
         . '}';
 
     echo '<style id="wparabic-inline">'

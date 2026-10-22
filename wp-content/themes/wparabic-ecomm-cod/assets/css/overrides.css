@@ -217,6 +217,13 @@
 
 /* --- Banniere d'accroche (widget at-home-hero) ----------------------------
    Tout le reste vient de .block-item / .block-item-content de style.css. */
+
+/* Teinte grise sur l'image (rgb(43 44 44 / 40%) definie dans style.css via
+   .block-item::before) : desactivable par case a cocher dans le widget. */
+.widget_at-home-hero .block-item.block-item-no-overlay::before {
+  display: none;
+}
+
 #page .block-item-subtitle {
   margin: 8px 0 0;
   font-size: 16px;

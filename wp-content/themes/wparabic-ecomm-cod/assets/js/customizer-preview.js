@@ -74,6 +74,22 @@
 			css += ':root{--wparabic-footer-text:' + (values.footer_text_color || contrast(values.footer_bg)) + ';}';
 		}
 
+		// Voile des tuiles : couleur + intensite, 0 % = transparent.
+		var oc = values.tile_overlay_color || '#2b2c2c';
+		var oo = parseInt(values.tile_overlay_opacity, 10);
+		if (isNaN(oo)) { oo = 40; }
+		oo = Math.max(0, Math.min(100, oo));
+		var rgba = 'transparent';
+		if (oo > 0) {
+			var oh = oc.replace('#', '');
+			if (oh.length === 3) {
+				oh = oh[0] + oh[0] + oh[1] + oh[1] + oh[2] + oh[2];
+			}
+			rgba = 'rgb(' + parseInt(oh.substr(0, 2), 16) + ' ' + parseInt(oh.substr(2, 2), 16)
+				+ ' ' + parseInt(oh.substr(4, 2), 16) + ' / ' + oo + '%)';
+		}
+		css += ':root{--wparabic-tile-overlay:' + rgba + ';}';
+
 		if (!$style) {
 			$style = document.createElement('style');
 			$style.id = 'wparabic-live-colors';
@@ -82,7 +98,7 @@
 		$style.textContent = css;
 	}
 
-	['primary_color', 'accent_color', 'topbar_bg', 'topbar_text', 'footer_bg', 'footer_text_color'].forEach(function (id) {
+	['primary_color', 'accent_color', 'topbar_bg', 'topbar_text', 'footer_bg', 'footer_text_color', 'tile_overlay_color', 'tile_overlay_opacity'].forEach(function (id) {
 		api(id, function (setting) {
 			// Valeurs de depart : le texte automatique du pied depend du fond
 			// meme quand seul l'un des deux reglages change.

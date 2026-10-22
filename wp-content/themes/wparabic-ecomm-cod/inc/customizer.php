@@ -116,6 +116,39 @@ function wparabic_customize($wp) {
         'section'     => 'wparabic_colors',
     )));
 
+    /* --- Voile des tuiles (banniere d'accroche + mosaique categories) -------
+     * .block-item::before : couleur + intensite du voile sombre. 0 % le
+     * desactive. Variable CSS --wparabic-tile-overlay (wparabic_inline_css),
+     * repli rgb(43 44 44 / 40%) dans style.css. */
+    $wp->add_setting('tile_overlay_color', array(
+        'default'           => '#2b2c2c',
+        'sanitize_callback' => 'sanitize_hex_color',
+        'transport'         => 'postMessage',
+    ));
+    $wp->add_control(new WP_Customize_Color_Control($wp, 'tile_overlay_color', array(
+        'label'   => __('لون ستارة البلاطات (البانر)', 'wparabic-ecomm-cod'),
+        'section' => 'wparabic_colors',
+    )));
+
+    $wp->add_setting('tile_overlay_opacity', array(
+        'default'           => 40,
+        'sanitize_callback' => function ($value) {
+            return max(0, min(100, absint($value)));
+        },
+        'transport'         => 'postMessage',
+    ));
+    $wp->add_control('tile_overlay_opacity', array(
+        'label'       => __('شدّة ستارة البلاطات (%)', 'wparabic-ecomm-cod'),
+        'description' => __('0 % يعطّل الستارة تمامًا (الصورة كما هي).', 'wparabic-ecomm-cod'),
+        'section'     => 'wparabic_colors',
+        'type'        => 'range',
+        'input_attrs' => array(
+            'min'  => 0,
+            'max'  => 90,
+            'step' => 5,
+        ),
+    ));
+
     /* --- Barre haute --------------------------------------------------- */
     $wp->add_section('wparabic_topbar', array(
         'title' => __('الشريط العلوي', 'wparabic-ecomm-cod'),

@@ -1276,6 +1276,7 @@ class WPArabic_Home_Widget_Hero extends WPArabic_Home_Widget {
             'button_text' => __('تسوق الان', 'wparabic-ecomm-cod'),
             'button_url'  => '',
             'height'      => 'lg',
+            'overlay'     => 1,
         );
     }
 
@@ -1300,7 +1301,7 @@ class WPArabic_Home_Widget_Hero extends WPArabic_Home_Widget {
         <div class="block-layout">
             <div class="row">
                 <div class="col-12">
-                    <div class="block-item block-item-<?php echo esc_attr($size); ?>"<?php echo $style; // phpcs:ignore WordPress.Security.EscapeOutput ?>>
+                    <div class="block-item block-item-<?php echo esc_attr($size); ?><?php echo empty($i['overlay']) ? ' block-item-no-overlay' : ''; ?>"<?php echo $style; // phpcs:ignore WordPress.Security.EscapeOutput ?>>
                         <div class="block-item-content-wrap">
                             <div class="block-item-content">
                                 <?php if (trim((string) $i['title']) !== '') : ?>
@@ -1328,6 +1329,7 @@ class WPArabic_Home_Widget_Hero extends WPArabic_Home_Widget {
         $this->field_enabled($i);
 
         $this->field_media($i, 'image_id', __('صورة الخلفية', 'wparabic-ecomm-cod'));
+        $this->field_checkbox($i, 'overlay', __('تظليل الصورة (رمادي 40%)', 'wparabic-ecomm-cod'));
         $this->field_text($i, 'title', __('العنوان', 'wparabic-ecomm-cod'));
         $this->field_text($i, 'subtitle', __('النص', 'wparabic-ecomm-cod'));
         $this->field_text($i, 'button_text', __('نص الزر', 'wparabic-ecomm-cod'));
@@ -1347,6 +1349,7 @@ class WPArabic_Home_Widget_Hero extends WPArabic_Home_Widget {
             'button_text' => sanitize_text_field($new['button_text'] ?? ''),
             'button_url'  => esc_url_raw($new['button_url'] ?? ''),
             'height'      => in_array($new['height'] ?? 'lg', array('lg', 'long'), true) ? $new['height'] : 'lg',
+            'overlay'     => !empty($new['overlay']) ? 1 : 0,
         );
     }
 }
