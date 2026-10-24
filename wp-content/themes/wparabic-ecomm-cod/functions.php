@@ -7,7 +7,7 @@
 
 defined('ABSPATH') || exit;
 
-define('WPARABIC_VERSION', '3.5.0');
+define('WPARABIC_VERSION', '3.14.0');
 define('WPARABIC_PRIMARY_DEFAULT', '#259bea');
 define('WPARABIC_ACCENT_DEFAULT', '#ea593c');
 
@@ -783,3 +783,4 @@ require get_template_directory() . '/inc/tn-states.php';
 require get_template_directory() . '/inc/shipping.php';
 require get_template_directory() . '/inc/attribute-colors.php';
 require get_template_directory() . '/inc/cod-form.php';
+require get_template_directory() . '/inc/theme-updater.php';
