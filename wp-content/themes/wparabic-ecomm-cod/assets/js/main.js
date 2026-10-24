@@ -487,20 +487,51 @@
 		}
 
 		function recalc() {
-			var unit = parseFloat($price.val());
 			var shipping = parseFloat($dPrice.val());
 			var count = qty();
 
-			$('#codplugin_count_number').html(count);
+			// Ligne 1 : produit simple => badge = quantite globale, prix unitaire.
+			// Produit variable => recalc() ne gere que le total ; chaque « مقطع »
+			// affiche son propre prix dans les handlers found_variation/reset_data
+			// ci-dessous badge « x 1 » par ligne.
+			if (!$articles.length) {
+				$('#codplugin_count_number_1').html(count);
+			}
+
+			if ($articles.length) {
+				// Un prix par article : le total additionne les blocs visibles,
+				// un seul article incomplet met le total en pause (pas de « 0.00 »).
+				var complete = true;
+				var unit = 0;
+
+				$articles.slice(0, count).each(function () {
+					var price = blockPrice($(this));
+					if (price === null) {
+						complete = false;
+					} else {
+						unit += price;
+					}
+				});
+
+				if (!complete || isNaN(shipping)) {
+					$('#codplugin_total_price').html('');
+					return;
+				}
+
+				$('#codplugin_total_price').html(money(unit + shipping));
+				return;
+			}
+
+			var unit = parseFloat($price.val());
 
 			// Aucune combinaison choisie : surtout pas « 0.00 ».
 			if (isNaN(unit)) {
-				$('#codplugin_v_price').html('&mdash;');
+				$('#codplugin_v_price_1').html('&mdash;');
 				$('#codplugin_total_price').html('');
 				return;
 			}
 
-			$('#codplugin_v_price').html(money(unit));
+			$('#codplugin_v_price_1').html(money(unit));
 
 			if (isNaN(shipping)) {
 				$('#codplugin_total_price').html('');
@@ -512,9 +543,34 @@
 
 		function setQty(next) {
 			var value = Math.max(1, next);
+
+			// Chaque article demande SON choix de variation : impossible d'aller
+			// au-dela du nombre de blocs rendus (wparabic_cod_max_articles).
+			if (maxArticles > 0) {
+				value = Math.min(value, maxArticles);
+			}
+
 			$qtyInput.val(value);
 			$('#codplugin_count_button').html(value);
-			$('#codplugin_count_number').html(value);
+			$('#codplugin_add_button').toggleClass('at-limit', maxArticles > 0 && value >= maxArticles);
+
+			// Un bloc et sa ligne de recapitulatif par article ; ce qui depasse
+			// est masque ET remis a zero : une combinaison choisie dans un bloc
+			// masque ne doit jamais resurgir dans la soumission du POST.
+			$articles.each(function () {
+				var n = articleIndex($(this));
+
+				if (n <= value) {
+					$(this).removeClass('is-hidden');
+					$('#codplugin_row_' + n).show();
+				} else {
+					$(this).addClass('is-hidden');
+					$('#codplugin_row_' + n).hide();
+					resetBlock($(this));
+				}
+			});
+
+			refreshOrderable();
 			recalc();
 		}
 
@@ -573,32 +629,117 @@
 			recalc();
 		});
 
-		// --- Variations WooCommerce (N attributs, pilotes depuis l'admin) --
-		// Handlers delegues sur $checkout : jQuery.trigger() remonte, donc
-		// found_variation / reset_data emis sur .variations_form arrivent ici,
-		// meme si le formulaire est re-rendu.
+		// --- Variations WooCommerce : un bloc par « مقطع » ----------------
+		// wparabic_cod_form() rend autant de blocs qu'il y a d'articles
+		// possibles (wparabic_cod_max_articles). Chaque bloc porte SA variation
+		// (.codplugin-item-var) et son prix (.codplugin-item-price). Handlers
+		// delegues sur $checkout : jQuery.trigger() remonte, donc
+		// found_variation / reset_data emis sur CHAQUE .variations_form
+		// arrivent ici — on identifie le bloc via .closest().
+		var $articles = $checkout.find('.codplugin-article');
+		var maxArticles = $articles.length;
 		var $vform = $checkout.find('.variations_form');
-		var $varId = $('#var_id');
-		var $hint = $checkout.find('.codplugin-variation-hint');
-		var $vLabel = $('#codplugin_variation_label');
 		var $headlinePrice = $('.summary > p.price').first();
 		var $stickyPrice = $('.head-mast-row .product-price');
 		var $savings = $('.price-savings');
 		var booted = false;
 
-		function variationLabel() {
+		function articleIndex($block) {
+			return parseInt($block.attr('data-index'), 10) || 1;
+		}
+
+		// Une ligne de recapitulatif par article reellement commande ; le
+		// compteur n'en revele que la quantite choisie.
+		function refreshRows() {
+			if (!$articles.length) {
+				return;
+			}
+
+			var count = qty();
+
+			$articles.each(function () {
+				var n = articleIndex($(this));
+				$('#codplugin_row_' + n).toggle(n <= count);
+			});
+		}
+
+		function blockVar($block) {
+			return parseInt($block.find('.codplugin-item-var').val(), 10) || 0;
+		}
+
+		function blockPrice($block) {
+			var value = parseFloat($block.find('.codplugin-item-price').val());
+			return isNaN(value) ? null : value;
+		}
+
+		function variationLabel($vformEl) {
 			var parts = [];
-			$vform.find('.variations select').each(function () {
+
+			$vformEl.find('.variations select').each(function () {
 				if ($(this).val()) {
 					parts.push($.trim($(this).find('option:selected').text()));
 				}
 			});
+
 			return parts.join(' / ');
+		}
+
+		function completeSelection() {
+			if (!$articles.length) {
+				return true;
+			}
+
+			var ok = true;
+
+			$articles.slice(0, qty()).each(function () {
+				if (!blockVar($(this))) {
+					ok = false;
+				}
+			});
+
+			return ok;
 		}
 
 		function setOrderable(ok) {
 			$('#nrwooconfirm').prop('disabled', !ok);
-			$hint.toggle(!ok);
+		}
+
+		// Champs requis du formulaire (nom, tel, wilaya, delegation, adresse) :
+		// le bouton de confirmation ne s'active qu'apres le remplissage, produit
+		// variable et produit simple confondus.
+		// Les selects de variation portent un required natif : leur completude
+		// est deja verifiee par completeSelection(), blocs caches compris, et
+		// le moindre select vide d'un bloc masque ferait bloquer le bouton.
+		// fieldsComplete s'en tient aux champs visibles hors .codplugin-article.
+		function fieldsComplete() {
+			var ok = true;
+
+			$checkout.find(':input[required]')
+				.not('.codplugin-article :input')
+				.filter(':visible')
+				.each(function () {
+					if (!String($(this).val() || '').trim()) {
+						ok = false;
+					}
+				});
+
+			return ok;
+		}
+
+		function refreshOrderable() {
+			setOrderable(completeSelection() && fieldsComplete());
+		}
+
+		// Toute frappe ou changement sur un champ requis reevalue le bouton
+		// (evenements delegues : les selects n'existent pas tous au boot).
+		$checkout.on('input change', ':input[required]', function () {
+			refreshOrderable();
+		});
+
+		// Vidange d'un bloc : le <select> natif reste la source de verite, WooCommerce
+		// declenche reset_data en reponse et le bloc se rajuste tout seul.
+		function resetBlock($block) {
+			$block.find('select').val('').trigger('change');
 		}
 
 		function syncSwatches() {
@@ -631,11 +772,40 @@
 		}
 
 		$checkout.on('found_variation', '.variations_form', function (event, variation) {
-			var ok = !!(variation.is_in_stock && variation.is_purchasable);
+			var $block = $(this).closest('.codplugin-article');
 
-			$varId.val(ok ? variation.variation_id : 0);
-			$price.val(ok ? variation.display_price : '');
-			$vLabel.text(variationLabel());
+			// Repli : une variations_form hors bloc COD (extension tierce) ne
+			// doit pas perturber ce formulaire. Exception : une page servie
+			// depuis un cache avec l'ancien HTML (un unique #var_id, aucun
+			// bloc) doit quand meme alimenter le chemin legacy du serveur.
+			if (!$block.length) {
+				var $legacyId = $('#var_id');
+
+				if ($legacyId.length) {
+					var legacyOk = !!(variation.is_in_stock && variation.is_purchasable);
+					$legacyId.val(legacyOk ? variation.variation_id : 0);
+					$price.val(legacyOk ? variation.display_price : '');
+				}
+
+				return;
+			}
+
+			var ok = !!(variation.is_in_stock && variation.is_purchasable);
+			var n = articleIndex($block);
+
+			$block.find('.codplugin-item-var').val(ok ? variation.variation_id : 0);
+			$block.find('.codplugin-item-price').val(ok ? variation.display_price : '');
+			$block.find('.codplugin-variation-hint').toggle(!ok);
+			$block.toggleClass('is-complete', ok);
+
+			// Ligne du recapitulatif reservee a cet article.
+			$('#codplugin_variation_label_' + n).text(ok ? variationLabel($(this)) : '');
+			$('#codplugin_v_price_' + n).html(ok ? money(parseFloat(variation.display_price)) : '&mdash;');
+
+			// Le prix « global » suit l'article 1 : POST historique + recalcul.
+			if (n === 1) {
+				$price.val(ok ? variation.display_price : '');
+			}
 
 			// price_html est vide quand toutes les variations partagent le meme
 			// prix : dans ce cas on laisse le prix rendu par PHP.
@@ -657,7 +827,7 @@
 				}
 			}
 
-			setOrderable(ok);
+			refreshOrderable();
 			syncSwatches();
 			if (booted) {
 				flashGif();
@@ -666,10 +836,33 @@
 		});
 
 		$checkout.on('reset_data', '.variations_form', function () {
-			$varId.val(0);
-			$price.val('');
-			$vLabel.text('');
-			setOrderable(false);
+			var $block = $(this).closest('.codplugin-article');
+
+			if (!$block.length) {
+				// Repli page en cache (ancien HTML) : remise a zero du var_id
+				// legacy, symetrique du found_variation ci-dessus.
+				if ($('#var_id').length) {
+					$('#var_id').val(0);
+					$price.val('');
+				}
+				return;
+			}
+
+			var n = articleIndex($block);
+
+			$block.find('.codplugin-item-var').val(0);
+			$block.find('.codplugin-item-price').val('');
+			$block.find('.codplugin-variation-hint').show();
+			$block.removeClass('is-complete');
+
+			$('#codplugin_variation_label_' + n).text('');
+			$('#codplugin_v_price_' + n).html('&mdash;');
+
+			if (n === 1) {
+				$price.val('');
+			}
+
+			refreshOrderable();
 			syncSwatches();
 			recalc();
 		});
@@ -692,6 +885,8 @@
 			}
 		});
 
+		refreshOrderable();
+		refreshRows();
 		syncSwatches();
 		booted = true;
 
@@ -710,8 +905,25 @@
 			var product = $.trim(
 				$('#codplugin_show_hide .summary-product-title').clone().children().remove().end().text()
 			);
-			var variant = $.trim($vLabel.text());
-			var text = (I18N.want_order || 'أريد طلب') + ' ' + product + (variant ? ' (' + variant + ')' : '') + ' × ' + qty();
+			var labels = [];
+
+			// Produit variable : la liste des articles, ligne par ligne.
+			if ($articles.length) {
+				$articles.slice(0, qty()).each(function () {
+					var label = $.trim($('#codplugin_variation_label_' + articleIndex($(this))).text());
+					if (label) {
+						labels.push(label);
+					}
+				});
+			} else {
+				var variant = $.trim($('#codplugin_variation_label_1').text());
+				if (variant) {
+					labels.push(variant);
+				}
+			}
+
+			var text = (I18N.want_order || 'أريد طلب') + ' ' + product
+				+ (labels.length ? ' (' + labels.join('، ') + ')' : '') + ' × ' + qty();
 
 			window.open(
 				'https://api.whatsapp.com/send?phone=' + (cfg.whatsapp || '') + '&text=' + encodeURIComponent(text),
@@ -745,23 +957,21 @@
 			$('#thanks-order-summary').children(':not(.order-summary-title)').remove();
 			$('.head-mast').removeClass('thanks-active');
 			$('.main, .footer').show();
-			$('#nrwooconfirm').prop('disabled', false);
+			// Re-evaluation : un echec avec des champs vides ne doit PAS
+			// laisser le bouton de confirmation active.
+			refreshOrderable();
 
 			if (!message) {
 				return;
 			}
 
-			// .codplugin-variation-hint n'existe que sur un produit variable :
-			// sur un produit simple on cree le conteneur du message.
-			var $target = $hint;
+			// Les hints « choisis ta combinaison » ont un role par bloc ; les
+			// erreurs serveur vont dans un message dedie, unique au formulaire.
+			var $target = $checkout.find('.codplugin-submit-error');
 
 			if (!$target.length) {
-				$target = $checkout.find('.codplugin-submit-error');
-
-				if (!$target.length) {
-					$target = $('<p class="codplugin-variation-hint codplugin-submit-error"></p>')
-						.insertBefore($checkout.find('.form-footer'));
-				}
+				$target = $('<p class="codplugin-variation-hint codplugin-submit-error"></p>')
+					.insertBefore($checkout.find('.form-footer'));
 			}
 
 			// Annonce aux lecteurs d'ecran et focus : le message est visible
@@ -782,10 +992,17 @@
 				// #nrwooconfirm[disabled] bloque le clic, mais la soumission
 				// implicite (Entree dans un champ texte) declenche quand meme
 				// submit : on garde avant de reveler l'ecran de remerciement.
-				if ($varId.length && !parseInt($varId.val(), 10)) {
-					setOrderable(false);
-					$('html, body').animate({ scrollTop: $checkout.offset().top - 100 }, 300);
-					return;
+				// Produit variable : TOUT article visible exige SON choix.
+				if ($articles.length) {
+					var $incomplete = $articles.slice(0, qty()).filter(function () {
+						return !blockVar($(this));
+					});
+
+					if ($incomplete.length) {
+						setOrderable(false);
+						$('html, body').animate({ scrollTop: $incomplete.first().offset().top - 120 }, 300);
+						return;
+					}
 				}
 
 				$('#nrwooconfirm').prop('disabled', true);
@@ -799,11 +1016,18 @@
 				data.push({ name: 'codplugin_c_number', value: qty() });
 				data.push({ name: 'd_price', value: $dPrice.val() });
 
-				// $varId vient de initCodForm() : surtout pas de « var » ici, il
-				// serait hoiste en tete de ce callback et masquerait la
-				// reference externe utilisee par la garde ci-dessus.
-				if ($varId.length) {
-					data.push({ name: 'var_id', value: $varId.val() });
+				// Un var_id par article, dans l'ordre des blocs visibles : le
+				// serveur regroupe les combinaisons identiques en lignes de
+				// commande et revalide chaque variation de son cote.
+				$articles.slice(0, qty()).each(function (i) {
+					data.push({ name: 'pairs[' + i + '][var_id]', value: String(blockVar($(this))) });
+				});
+
+				// Repli page en cache (ancien HTML) : aucun bloc, le formulaire
+				// passe par le chemin legacy du serveur. Pause explicitement,
+				// si le input n'est pas relie au <form>.
+				if (!$articles.length && $('#var_id').length) {
+					data.push({ name: 'var_id', value: String($('#var_id').val() || 0) });
 				}
 
 				// Le formulaire reste visible pendant l'envoi (bouton desactive +

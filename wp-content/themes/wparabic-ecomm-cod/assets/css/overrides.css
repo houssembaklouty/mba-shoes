@@ -703,12 +703,35 @@
   }
 }
 
-/* --- Libelle de variation dans le recapitulatif --------------------------- */
-#codplugin_variation_label {
+/* --- Libelle de variation dans le recapitulatif ---------------------------
+   Une ligne par article : le selecteur par prefixe couvre les lignes 1..N
+   rendues par wparabic_cod_form() (badge « x count » inclus), tout en
+   restant compatible avec l'ancien HTML en cache (#codplugin_variation_label
+   nu, #codplugin_count_number nu). */
+#codplugin_variation_label,
+[id^="codplugin_variation_label_"] {
   display: block;
   font-weight: 400 !important;
   font-size: 13px;
   color: #8e8e8e;
+}
+
+#codplugin_count_number,
+[id^="codplugin_count_number_"] {
+  display: inline-block;
+  font-size: 12px;
+  height: 18px;
+  line-height: 18px;
+  padding: 0 3px;
+  background-color: var(--wparabic-primary, #259bea);
+  border-radius: 3px;
+  color: #fff;
+  font-weight: 700;
+}
+
+#codplugin_count_number:before,
+[id^="codplugin_count_number_"]:before {
+  content: 'x ';
 }
 
 @media (max-width: 488px) {
@@ -1579,4 +1602,63 @@ html:not([dir="rtl"]) #codplugin-checkout .form-qte {
   .wparabic-cats--carousel .wparabic-cat {
     flex-basis: calc((100% - 3 * 20px) / 4);
   }
+}
+
+/* --- Formulaire COD : un bloc de variation par « مقطع » --------------------
+   inc/cod-form.php rend autant de blocs qu'il y a d'articles possibles
+   (filtre wparabic_cod_max_articles, 10 par défaut) ; main.js n'affiche que
+   la quantité demandée et vide les blocs masqués. Chaque article exige SON
+   choix de couleur et de pointure. */
+.codplugin-variations {
+  margin-bottom: 0;
+}
+
+.codplugin-article {
+  margin-bottom: 14px;
+  padding: 12px;
+  border: 1px solid var(--wparabic-primary-light, #bce0f7);
+  border-radius: 6px;
+  background: #fff;
+}
+
+.codplugin-article:last-child {
+  margin-bottom: 0;
+}
+
+.codplugin-article.is-hidden {
+  display: none !important;
+}
+
+.codplugin-article-head {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.codplugin-article-num {
+  display: inline-block;
+  padding: 0 14px;
+  line-height: 24px;
+  border-radius: 12px;
+  background: var(--wparabic-primary, #259bea);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* Choix complet pour cet article : réutilise le vert de validation du thème. */
+.codplugin-article.is-complete .codplugin-article-num {
+  background: #69bf29;
+}
+
+.codplugin-article .codplugin-variation-hint {
+  margin-bottom: 0;
+  padding: 0;
+  border: none;
+}
+
+/* Le compteur « + » marque la limite : plus d'articles que de blocs rendus. */
+#codplugin_add_button.at-limit {
+  opacity: 0.35;
+  cursor: default;
 }

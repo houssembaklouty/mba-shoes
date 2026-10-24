@@ -67,6 +67,20 @@ function wparabic_get_shipping_cost($governorate_slug) {
     return (float) (isset($costs[$governorate_slug]) ? $costs[$governorate_slug] : 7);
 }
 
+/**
+ * Nombre maximum de « مقطع » (articles) selectionnables.
+ *
+ * Le formulaire rend un bloc de variation par article possible, en HTML
+ * cache pour les articles au-dela du premier. La quantite du compteur ne
+ * peut donc pas depasser ce plafond. Filtrable pour les marchands qui
+ * vendent en gros lots.
+ *
+ * @return int
+ */
+function wparabic_cod_max_articles() {
+    return max(1, (int) apply_filters('wparabic_cod_max_articles', 10));
+}
+
 /* -------------------------------------------------------------------------
  * Champs du formulaire
  *
@@ -339,6 +353,29 @@ function wparabic_variation_dropdown_args($args) {
 }
 
 /**
+ * Id de <select> unique au sein de chaque bloc « مقطع ».
+ *
+ * Le meme formulaire de variation est rendu autant de fois qu'il y a
+ * d'articles possibles : sans suffixe, dix selects partageraient id
+ * « pa_color ». L'index du bloc courant est pose par la boucle de rendu de
+ * wparabic_cod_form() ; hors du formulaire COD (mini-panier, blocs tiers) il
+ * reste absent et le comportement inline de WooCommerce est conserve.
+ */
+add_filter('woocommerce_dropdown_variation_attribute_options_args', 'wparabic_variation_dropdown_block_id', 15);
+function wparabic_variation_dropdown_block_id($args) {
+    $index = isset($GLOBALS['_wparabic_article_index']) ? (int) $GLOBALS['_wparabic_article_index'] : 0;
+
+    if ($index < 2) {
+        return $args;
+    }
+
+    $base       = !empty($args['id']) ? $args['id'] : sanitize_title($args['attribute']);
+    $args['id'] = $base . '-' . $index;
+
+    return $args;
+}
+
+/**
  * Au-dela de 30 variations WooCommerce bascule en aller-retour AJAX et cesse de
  * filtrer les options disponibles. 5 couleurs x 8 pointures depassent ce seuil.
  */
@@ -372,6 +409,16 @@ function wparabic_cod_form($product) {
     $variation_label = $selection['variation_id']
         ? wc_get_formatted_variation(wc_get_product($selection['variation_id']), true, false)
         : '';
+
+    /*
+     * Un bloc de variation par article possible : le client choisit couleur
+     * et pointure POUR CHAQUE « مقطع » des que la quantite depasse 1. Le
+     * bloc 1 est seul visible au chargement (data-index 1), les suivants
+     * attendent en display:none — wc-add-to-cart-variation.js les attache
+     * des le chargement de la page, cache ou non.
+     */
+    $max_articles   = $is_variable ? wparabic_cod_max_articles() : 1;
+    $choose_hint    = $is_variable ? wparabic_cod_choose_hint($product) : '';
 
     $state_placeholder   = '🌎 ' . __('الولاية', 'wparabic-ecomm-cod');
     $address_placeholder = '📍 ' . __('العنوان (الشارع، الحي، رقم المنزل)', 'wparabic-ecomm-cod');
@@ -513,12 +560,37 @@ function wparabic_cod_form($product) {
 
         <?php if ($is_variable) : ?>
             <div class="codplugin-variations">
-                <?php wparabic_render_variations_form($product); ?>
-                <p class="codplugin-variation-hint"<?php echo $selection['complete'] ? ' style="display:none"' : ''; ?>>
-                    <?php echo esc_html(wparabic_cod_choose_hint($product)); ?>
-                </p>
+                <?php
+                for ($i = 1; $i <= $max_articles; $i++) :
+                    // Pour que le selecteur de variation garde un id unique
+                    // dans chaque bloc (voir wparabic_variation_dropdown_block_id).
+                    $GLOBALS['_wparabic_article_index'] = $i;
+                    ?>
+                    <div class="codplugin-article<?php echo $i > 1 ? ' is-hidden' : ''; ?>" data-index="<?php echo esc_attr($i); ?>">
+                        <div class="codplugin-article-head">
+                            <span class="codplugin-article-num"><?php echo esc_html($i); ?></span>
+                        </div>
+
+                        <?php wparabic_render_variations_form($product); ?>
+
+                        <?php
+                        // Variation et prix unitaire RESERVES a l'article i :
+                        // Html attendus par recalc()/syncSwatches() — ils ne partent
+                        // jamais seuls dans le POST (pas d'attribut form=), la
+                        // soumission recopie explicitement var_id_n dans pairs[].
+                        ?>
+                        <input type="hidden" class="codplugin-item-var"   id="var_id_<?php echo esc_attr($i); ?>"          value="<?php echo esc_attr($i === 1 ? $selection['variation_id'] : 0); ?>">
+                        <input type="hidden" class="codplugin-item-price" id="codplugin_price_<?php echo esc_attr($i); ?>" value="<?php echo esc_attr($i === 1 ? $default_price : ''); ?>">
+
+                        <p class="codplugin-variation-hint"<?php echo ($i === 1 && $selection['complete']) ? ' style="display:none"' : ''; ?>>
+                            <?php echo esc_html($choose_hint); ?>
+                        </p>
+                    </div>
+                <?php
+                endfor;
+                unset($GLOBALS['_wparabic_article_index']);
+                ?>
             </div>
-            <input type="hidden" name="var_id" id="var_id" value="<?php echo esc_attr($selection['variation_id']); ?>" form="codplugin_woo_single_form">
         <?php endif; ?>
 
         <input type="hidden" name="codplugin_price" id="codplugin_price" value="<?php echo esc_attr($default_price); ?>" form="codplugin_woo_single_form">
@@ -572,23 +644,35 @@ function wparabic_cod_form($product) {
 
         <div id="codplugin_show_hide">
             <table>
-                <tr>
-                    <td class="summary-product-title">
-                        <?php echo esc_html($product->get_name()); ?>
-                        <?php if ($is_variable) : ?>
-                            <small id="codplugin_variation_label"><?php echo esc_html($variation_label); ?></small>
-                        <?php endif; ?>
-                    </td>
-                    <td>
-                        <span id="codplugin_count_number">1</span>
-                        <span id="codplugin_v_price"><?php
-                            echo $default_price === ''
-                                ? '&mdash;'
-                                : esc_html(number_format((float) $default_price, wc_get_price_decimals(), '.', ''));
-                        ?></span>
-                        <span> <?php echo esc_html($currency_symbol); ?></span>
-                    </td>
-                </tr>
+                <?php
+                /*
+                 * Une ligne par article : la variation choisie dans le bloc i
+                 * alimente la ligne i (assets/js/main.js). Les lignes au-dela
+                 * du premier article restent cachees tant que le compteur ne
+                 * les demandent pas. Produit simple : la ligne 1 seule existe.
+                 */
+                for ($i = 1; $i <= $max_articles; $i++) :
+                    $row_price = ($i === 1) ? $default_price : '';
+                    $row_label = ($i === 1) ? $variation_label : '';
+                    ?>
+                    <tr id="codplugin_row_<?php echo esc_attr($i); ?>"<?php echo $i > 1 ? ' style="display:none"' : ''; ?>>
+                        <td class="summary-product-title">
+                            <?php echo esc_html($product->get_name()); ?>
+                            <?php if ($is_variable) : ?>
+                                <small id="codplugin_variation_label_<?php echo esc_attr($i); ?>" class="codplugin-item-label"><?php echo esc_html($row_label); ?></small>
+                            <?php endif; ?>
+                        </td>
+                        <td>
+                            <span id="codplugin_count_number_<?php echo esc_attr($i); ?>">1</span>
+                            <span id="codplugin_v_price_<?php echo esc_attr($i); ?>"><?php
+                                echo $row_price === ''
+                                    ? '&mdash;'
+                                    : esc_html(number_format((float) $row_price, wc_get_price_decimals(), '.', ''));
+                            ?></span>
+                            <span> <?php echo esc_html($currency_symbol); ?></span>
+                        </td>
+                    </tr>
+                <?php endfor; ?>
                 <tr>
                     <td>
                         <span><?php esc_html_e('سعر التوصيل', 'wparabic-ecomm-cod'); ?></span>
@@ -763,57 +847,127 @@ function wparabic_cod_ajax_handler() {
         wp_send_json_error(array('message' => __('المنتج غير موجود', 'wparabic-ecomm-cod')));
     }
 
-    // Pour un produit variable, la ligne de commande porte la combinaison
-    // reellement choisie par le client, pas la premiere venue.
-    $line_item = $product;
+    /*
+     * Produit variable : le client commande PLUSIEURS « مقطع », chacun avec
+     * SA variation (pairs[0][var_id], pairs[1][var_id], …). Les combinaisons
+     * identiques sont regroupees : une ligne de commande lisible
+     * (« 2 × أسود/42 ») et un stock évalué groupe par groupe. Le POST
+     * historique mono-article (var_id + quantite) reste accepte : une page
+     * servie par un cache avec l'ancien JS doit continuer a fonctionner.
+     */
+    $pairs_post = array();
+
+    if (isset($_POST['pairs']) && is_array($_POST['pairs'])) {
+        $raw_pairs = wp_unslash($_POST['pairs']); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+        foreach ($raw_pairs as $pair) {
+            if (is_array($pair) && isset($pair['var_id'])) {
+                $pairs_post[] = absint($pair['var_id']);
+            }
+        }
+    }
+
+    // Un client trivial pourrait poster moins d'articles que le compteur :
+    // completOuPas, le nombre doit correspondre exactement.
+    if ($pairs_post && count($pairs_post) !== $qty) {
+        $pairs_post = array();
+    }
+    if (!$pairs_post && $product->is_type('variable') && $var_id) {
+        $pairs_post = array_fill(0, $qty, $var_id);
+    }
+
+    // Grouper les articles identiques : id de variation => quantite.
+    $groups = array();
+    foreach ($pairs_post as $vid) {
+        $groups[$vid] = isset($groups[$vid]) ? $groups[$vid] + 1 : 1;
+    }
+
+    /*
+     * Liste blanche + controles par groupe. Chaque variation doit appartenir
+     * a CE produit (moins couteux que get_available_variations(), qui
+     * chargeait chaque variation et ses images a chaque commande). Stock,
+     * « vendu individuellement » et quantite maximale d'achat de WooCommerce
+     * (-1 = illimitee) sont evalues avec la quantite GROUPEE.
+     */
+    $grouped   = array();
+    $subtotal  = 0.0;
 
     if ($product->is_type('variable')) {
-        $variation = $var_id ? wc_get_product($var_id) : null;
-
-        // Liste blanche : la variation doit appartenir a CE produit. Moins
-        // couteux que get_available_variations(), qui chargeait chaque
-        // variation et ses images a chaque commande.
-        if (!$variation instanceof WC_Product_Variation
-            || $variation->get_parent_id() !== $product->get_id()) {
+        if (!$groups) {
             wp_send_json_error(array('message' => wparabic_cod_choose_hint($product)));
         }
 
-        $line_item = $variation;
-    }
+        foreach ($groups as $vid => $count) {
+            $variation = wc_get_product($vid);
 
-    // Quantite : « vendu individuellement » et quantite maximale d'achat de
-    // WooCommerce (-1 = illimitee) respectes, comme au panier.
-    if ($line_item->is_sold_individually()) {
-        $qty = 1;
-    }
-    $max_qty = (int) $line_item->get_max_purchase_quantity();
-    if ($max_qty > 0 && $qty > $max_qty) {
-        wp_send_json_error(array(
-            /* translators: %d: maximum quantity */
-            'message' => sprintf(__('الكمية المطلوبة غير متوفرة. الحد الأقصى : %d', 'wparabic-ecomm-cod'), $max_qty),
-        ));
-    }
+            if (!$variation instanceof WC_Product_Variation
+                || $variation->get_parent_id() !== $product->get_id()) {
+                wp_send_json_error(array('message' => wparabic_cod_choose_hint($product)));
+            }
 
-    // Controle de stock cote serveur : un POST forge sur une variation epuisee
-    // passait jusqu'ici.
-    if (!$line_item->is_purchasable()
-        || !$line_item->is_in_stock()
-        || !$line_item->has_enough_stock($qty)) {
-        wp_send_json_error(array('message' => __('الخيار المختار غير متوفر حاليا', 'wparabic-ecomm-cod')));
-    }
+            if ($variation->is_sold_individually() && $count > 1) {
+                wp_send_json_error(array(
+                    /* translators: %d: maximum quantity */
+                    'message' => sprintf(__('الكمية المطلوبة غير متوفرة. الحد الأقصى : %d', 'wparabic-ecomm-cod'), 1),
+                ));
+            }
 
-    $price = (float) $line_item->get_price();
+            $max_qty = (int) $variation->get_max_purchase_quantity();
+            if ($max_qty > 0 && $count > $max_qty) {
+                wp_send_json_error(array(
+                    /* translators: %d: maximum quantity */
+                    'message' => sprintf(__('الكمية المطلوبة غير متوفرة. الحد الأقصى : %d', 'wparabic-ecomm-cod'), $max_qty),
+                ));
+            }
+
+            // Controle de stock cote serveur : un POST forge sur une variation
+            // epuisee passait jusqu'ici.
+            if (!$variation->is_purchasable()
+                || !$variation->is_in_stock()
+                || !$variation->has_enough_stock($count)) {
+                wp_send_json_error(array('message' => __('الخيار المختار غير متوفر حاليا', 'wparabic-ecomm-cod')));
+            }
+
+            $grouped[$vid] = array('variation' => $variation, 'count' => $count);
+            $subtotal += (float) $variation->get_price() * $count;
+        }
+    } else {
+        // Produit simple : comportement historique (une ligne = produit × qty).
+        if ($product->is_sold_individually()) {
+            $qty = 1;
+        }
+        $max_qty = (int) $product->get_max_purchase_quantity();
+        if ($max_qty > 0 && $qty > $max_qty) {
+            wp_send_json_error(array(
+                /* translators: %d: maximum quantity */
+                'message' => sprintf(__('الكمية المطلوبة غير متوفرة. الحد الأقصى : %d', 'wparabic-ecomm-cod'), $max_qty),
+            ));
+        }
+
+        if (!$product->is_purchasable()
+            || !$product->is_in_stock()
+            || !$product->has_enough_stock($qty)) {
+            wp_send_json_error(array('message' => __('الخيار المختار غير متوفر حاليا', 'wparabic-ecomm-cod')));
+        }
+
+        $grouped[$product->get_id()] = array('variation' => $product, 'count' => $qty);
+        $subtotal = (float) $product->get_price() * $qty;
+    }
 
     // Tarif recalcule cote serveur depuis les zones WooCommerce : jamais lu
-    // depuis le POST.
-    $rate     = wparabic_get_shipping_rate($state, $line_item, $qty);
+    // depuis le POST. Zone + quantite TOTALE (le parent porte la classe de
+    // livraison, pas les variations).
+    $rate     = wparabic_get_shipping_rate($state, $product, $qty);
     $shipping = (float) $rate['cost'];
-    $subtotal = $price * $qty;
     $total    = $subtotal + $shipping;
 
-    // Anti-doublon : meme telephone, meme produit, meme option en moins de
+    // Anti-doublon : meme telephone, meme LISTE d'articles en moins de
     // 3 minutes (double clic, retour arriere, robot) => pas de 2e commande.
-    $dup_key = 'wparabic_cod_dup_' . md5($phone . '|' . $product->get_id() . '|' . $line_item->get_id());
+    // Deux paniers differents (variations differentes) restent acceptes.
+    $sig_items = array();
+    foreach ($groups as $vid => $count) {
+        $sig_items[] = $vid . 'x' . $count;
+    }
+    $dup_key = 'wparabic_cod_dup_' . md5($phone . '|' . $product->get_id() . '|' . implode('|', $sig_items));
     if (get_transient($dup_key)) {
         wp_send_json_error(array('message' => __('طلبك قيد المعالجة. لقد استلمنا هذا الطلب للتو.', 'wparabic-ecomm-cod')));
     }
@@ -839,7 +993,11 @@ function wparabic_cod_ajax_handler() {
     // champ refuse...) : sans ce try, la commande restait « en attente »,
     // orpheline, et le client recevait une erreur 500.
     try {
-        $order->add_product($line_item, $qty);
+        // Une ligne par combinaison choisie : « 2 × أسود/42 » reste lisible
+        // pour le vendeur, et le total porte le vrai prix de chaque variation.
+        foreach ($grouped as $group) {
+            $order->add_product($group['variation'], $group['count']);
+        }
 
         // Si le champ nom est masque, on retombe sur le telephone plutot que de
         // laisser un nom vide : la liste des commandes et les emails WooCommerce
@@ -904,6 +1062,19 @@ function wparabic_cod_ajax_handler() {
 
         array_unshift($note, 'طلب COD: ' . $billing_name);
 
+        // Le vendeur relit les articles choisis d'un coup d'œil, meme si les
+        // lignes de commande suffisent : « أسود، 42 ×2، أسود، 44 ».
+        $variation_note = array();
+        foreach ($grouped as $group) {
+            if ($group['variation'] instanceof WC_Product_Variation) {
+                $variation_note[] = wc_get_formatted_variation($group['variation'], true, false)
+                    . ($group['count'] > 1 ? ' ×' . $group['count'] : '');
+            }
+        }
+        if ($variation_note) {
+            $note[] = 'المقاطع: ' . implode('، ', $variation_note);
+        }
+
         $order->set_customer_note(implode(' | ', $note));
         $order->calculate_totals();
         $order->set_status('processing', 'طلب COD عبر الموقع');
@@ -951,7 +1122,7 @@ function wparabic_cod_ajax_handler() {
         'message'   => sprintf(__('تم تأكيد طلبك بنجاح! سيتم الاتصال بك قريبًا على الرقم %s', 'wparabic-ecomm-cod'), $phone),
         'order_id'  => $order_id,
         'order_key' => $order->get_order_key(),
-        'product'   => $line_item->get_name(),
+        'product'   => $product->get_name(),
         'quantity'  => $qty,
         'subtotal'  => wc_price($subtotal),
         'shipping'  => wc_price($shipping),
